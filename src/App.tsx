@@ -1,117 +1,85 @@
 import React, { useState } from 'react';
 import './App.css';
 
-// Structure des questions
 const questions = [
-  {
-    id: 'nationalite',
-    question: "Quelle est ta nationalité ?",
-    options: ["UE (Union Européenne)", "Hors UE"],
-    note: "Important pour les frais d'inscription et les visas"
-  },
-  {
-    id: 'annee',
-    question: "En quelle année souhaites-tu partir en échange ?",
-    options: ["3ème année (3A)", "4ème année (4A)", "5ème année (5A)"]
-  },
-  {
-    id: 'moyenne',
-    question: "Quelle est ta moyenne du dernier semestre ?",
-    options: ["< 10", "10 - 12", "12 - 14", "> 15"]
-  },
-  {
-    id: 'continent',
-    question: "Quel continent t'attire le plus ?",
-    options: ["Europe", "Amérique du Nord", "Amérique Latine", "Asie", "Océanie", "Je suis ouvert(e) à tout !"]
-  },
-  {
-    id: 'langue',
-    question: "Dans quelle(s) langue(s) as-tu un niveau B2-C1 ?",
-    options: ["Anglais", "Espagnol", "Allemand", "Japonais", "Autre"]
-  },
-  {
-    id: 'type',
-    question: "Quel type de séjour envisages-tu ?",
-    options: ["Accord de mobilité", "Erasmus", "Double Diplôme", "UNITECH"]
-  },
-  {
-    id: 'budget',
-    question: "Quel est ton budget mensuel maximum ?",
-    options: ["< 500€", "500€ - 800€", "800€ - 1200€", "> 1200€"]
-  },
-  {
-    id: 'ville',
-    question: "Quelle taille de ville te correspond le mieux ?",
-    options: ["🏙️ Mégalopole", "🏙️ Grande ville", "🏡 Ville à taille humaine"]
-  },
-  {
-    id: 'meteo',
-    question: "Ton climat idéal pour étudier ?",
-    options: ["☀️ Chaleur & Soleil", "❄️ Grand froid & Neige", "☁️ Tempéré / Peu importe"]
-  },
-  {
-    id: 'domaine',
-    question: "Quel domaine technique t'attire ?",
-    options: ["🤖 Intelligence Artificielle", "💻 Dev Web & Mobile", "📡 Cybersécurité", "🏢 Management"]
-  },
-  {
-    id: 'structure',
-    question: "Quel type de structure te fait rêver ?",
-    options: ["🦄 Start-up", "🏢 Grands Groupes", "🔬 Recherche & Académie"]
-  }
+  { id: 'nationalite', question: "Quelle est ta nationalité ?", options: ["UE (Union Européenne)", "Hors UE"] },
+  { id: 'annee', question: "En quelle année souhaites-tu partir ?", options: ["3A", "4A", "5A"] },
+  { id: 'moyenne', question: "Ta moyenne du dernier semestre ?", options: ["< 10", "10-12", "12-14", "> 15"] },
+  { id: 'continent', question: "Quel continent t'attire ?", options: ["Europe", "Amérique", "Asie", "Océanie"] },
+  { id: 'budget', question: "Budget mensuel maximum ?", options: ["< 500€", "500-800€", "800-1200€", "> 1200€"] },
+  { id: 'domaine', question: "Ton domaine technique ?", options: ["IA", "Dev Web", "Cyber", "Management"] }
 ];
 
 export default function Quiz() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isFinished, setIsFinished] = useState(false);
+  const [recommendations, setRecommendations] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAnswer = (answer: string) => {
-    const questionId = questions[currentStep].id;
-    setAnswers({ ...answers, [questionId]: answer });
+  const handleAnswer = (option: string) => {
+    const newAnswers = { ...answers, [questions[currentStep].id]: option };
+    setAnswers(newAnswers);
 
     if (currentStep < questions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      setIsFinished(true);
+      handleFinish(newAnswers);
+    }
+  };
+
+  const handleFinish = async (finalAnswers: Record<string, string>) => {
+    setIsLoading(true);
+    setIsFinished(true);
+    try {
+      const response = await fetch('http://localhost:8000/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(finalAnswers)
+      });
+      const data = await response.json();
+      setRecommendations(data.result);
+    } catch (error) {
+      setRecommendations("Impossible de joindre le serveur. Vérifie que le script Python et Ollama tournent !");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   if (isFinished) {
     return (
-      <div className="quiz-container result-page">
-        <h2>🎉 Quiz terminé !</h2>
-        <p>Merci Aida et Lilia ! Vos critères ont été enregistrés.</p>
-        <p>Analyse de {questions.length} critères en cours...</p>
-        <button onClick={() => window.location.reload()} className="option-button">Recommencer</button>
+      <div className="quiz-container">
+        <h2>✨ Tes résultats</h2>
+        {isLoading ? (
+          <div className="loader-box">
+            <div className="spinner"></div>
+            <p>🤖 L'IA analyse ton profil...</p>
+          </div>
+        ) : (
+          <div className="ai-result">
+            <p style={{ whiteSpace: 'pre-wrap', textAlign: 'left', lineHeight: '1.6', fontSize: '0.95rem' }}>
+              {recommendations}
+            </p>
+            <button onClick={() => window.location.reload()} className="option-button" style={{marginTop: '20px', width: '100%'}}>
+              Refaire le quiz
+            </button>
+          </div>
+        )}
       </div>
     );
   }
 
-  const progress = ((currentStep) / questions.length) * 100;
-
   return (
-    <div className="quiz-container">
-      <div className="progress-bar">
-        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
-      </div>
-
-      <div className="question-card">
-        <span>Question {currentStep + 1} / {questions.length}</span>
-        <h2>{questions[currentStep].question}</h2>
-        {questions[currentStep].note && <p style={{fontSize: '0.8em', color: '#666'}}>{questions[currentStep].note}</p>}
-        
-        <div className="options-grid">
-          {questions[currentStep].options.map((option) => (
-            <button 
-              key={option} 
-              className="option-button"
-              onClick={() => handleAnswer(option)}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
+    // La "key" permet de relancer l'animation CSS à chaque question
+    <div className="quiz-container" key={currentStep}>
+      <span className="step-indicator">Question {currentStep + 1} / {questions.length}</span>
+      <h2>{questions[currentStep].question}</h2>
+      <div className="options-grid">
+        {questions[currentStep].options.map(opt => (
+          <button key={opt} onClick={() => handleAnswer(opt)} className="option-button">
+            {opt}
+          </button>
+        ))}
       </div>
     </div>
   );
