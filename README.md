@@ -34,10 +34,10 @@ Puis ouvrir l'application sur l'URL affichée dans le terminal, en général `ht
 ```bash
 src/
   components/
-    DestinationCard.jsx
+    DestinationCard.tsx
   pages/
-    CatalogPage.jsx
-    DestinationPage.jsx
+    CatalogPage.tsx
+    DestinationPage.tsx
   data/
     destinations.json
 ```

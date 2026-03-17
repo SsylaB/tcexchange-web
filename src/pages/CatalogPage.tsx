@@ -1,16 +1,18 @@
 import { useState } from "react";
 import destinations from "../data/destinations.json";
 import DestinationCard from "../components/DestinationCard";
+import { Destination } from "../types";
+
+const typedDestinations = destinations as Destination[];
 
 function CatalogPage() {
-    const [search, setSearch] = useState("");
-    const [selectedCountry, setSelectedCountry] = useState("");
+    const [search, setSearch] = useState<string>("");
+    const [selectedCountry, setSelectedCountry] = useState<string>("");
 
-    const countries = [...new Set(destinations.map((d) => d.country))].sort();
+    const countries: string[] = [...new Set(typedDestinations.map((d) => d.country))].sort();
 
-    const filteredDestinations = destinations.filter((destination) => {
-        const matchesSearch =
-        destination.universityName
+    const filteredDestinations = typedDestinations.filter((destination) => {
+        const matchesSearch = destination.universityName
             .toLowerCase()
             .includes(search.toLowerCase());
         const matchesCountry =
@@ -20,8 +22,8 @@ function CatalogPage() {
 
 
     return (
-        <main style={{ padding: "8rem" }}>
-            <h1>Catalogue des destinations</h1>
+        <main className={"catalog-page"}>
+            <h1 className="catalog-page__title">Catalogue des destinations</h1>
 
             <div className="catalog-filters">
                 <input
@@ -46,16 +48,11 @@ function CatalogPage() {
                 </select>
             </div>
 
-            <p>{filteredDestinations.length} destination(s) trouvée(s)</p>
+            <p className={"catalog-page__count"}>
+                {filteredDestinations.length} destination(s) trouvée(s)
+            </p>
 
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                    gap: "1rem",
-                    marginTop: "1.5rem"
-                }}
-            >
+            <div className="catalog-grid">
                 {filteredDestinations.map((destination) => (
                     <DestinationCard
                         key={destination.id}
