@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Destination } from "../types";
+import "../styles/DestinationCard.css";
 
 interface Props {
     destination: Destination;

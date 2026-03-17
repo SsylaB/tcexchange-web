@@ -1,15 +1,23 @@
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
 import CatalogPage from "./pages/CatalogPage";
+import QuizPage from "./pages/QuizPage";
+import ChatbotPage from "./pages/ChatbotPage";
 import DestinationPage from "./pages/DestinationPage";
-import "./App.css"
 
 function App() {
-  return (
-      <Routes>
-        <Route path="/" element={<CatalogPage />} />
-        <Route path="/destination/:id" element={<DestinationPage />} />
-      </Routes>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route element={<Layout />}>
+                    <Route path="/" element={<CatalogPage />} />
+                    <Route path="/destination/:id" element={<DestinationPage />} />
+                    <Route path="/quiz" element={<QuizPage />} />
+                    <Route path="/chatbot" element={<ChatbotPage />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;

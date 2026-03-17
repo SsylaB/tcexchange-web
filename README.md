@@ -46,12 +46,12 @@ L'application est pour l'instant construite avec des données locales afin d'ava
 
 ## Objectifs à venir
 
-- Ajouter d'autres filtres, par exemple langue ou type d'échange
-- Améliorer la page détail
-- Ajouter une page favoris ou comparaison (feature en développement)
-- Connecter le front à une API plus tard
-- Ajouter un chatbot d'aide pour l'échange (feature en développement)
-- Ajouter un quiz pour aider à choisir sa destination (feature en développement)
+[X] Ajouter d'autres filtres, par exemple langue ou type d'échange
+[X] Améliorer la page détail
+[ ] Ajouter une page favoris ou comparaison (feature en développement)
+[ ] Connecter le front à une API plus tard
+[ ] Ajouter un chatbot d'aide pour l'échange (feature en développement)
+[ ] Ajouter un quiz pour aider à choisir sa destination (feature en développement)
 
 ## Auteur
 
