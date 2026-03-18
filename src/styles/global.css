@@ -1,0 +1,57 @@
+:root {
+    --bg: #fbfaf6;
+    --bg-gradient-top: #fffdf8;
+    --surface: #ffffff;
+    --surface-soft: #fff7e8;
+    --surface-blue: #eef8fc;
+
+    --text: #16311f;
+    --text-soft: #667065;
+    --border: #ece4d6;
+
+    --green-dark: #0b2f16;
+    --green-light: #66c85f;
+    --red: #e45a52;
+    --orange: #f3b34c;
+    --orange-dark: #e09a25;
+
+    --blue-light: #5bc0de;
+    --blue-dark: #428bca;
+
+    --shadow-sm: 0 6px 18px rgba(18, 30, 22, 0.06);
+    --shadow-md: 0 12px 30px rgba(18, 30, 22, 0.08);
+    --radius-sm: 14px;
+    --radius-md: 20px;
+    --radius-lg: 26px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, Arial, sans-serif;
+    background: linear-gradient(180deg, var(--bg-gradient-top) 0%, var(--bg) 100%);
+    color: var(--text);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}

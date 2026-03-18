@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+# Exchange Destinations Catalog
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Petit projet React permettant de consulter un catalogue de destinations universitaires pour un échange académique.  
+L'application permet actuellement d'afficher des cartes de destination, de rechercher une université et de filtrer les résultats par pays.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React
+- Vite
+- React Router
+- CSS
+- Données mockées en JSON
 
-## React Compiler
+## Features actuelles
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Affichage d'un catalogue de destinations
+- Cartes réutilisables avec infos principales
+- Lien vers le site officiel de l'université
+- Navigation vers une page détail
+- Barre de recherche
+- Filtre par pays
 
-## Expanding the ESLint configuration
+## Lancer le projet
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Puis ouvrir l'application sur l'URL affichée dans le terminal, en général `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Structure du projet
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+src/
+  components/
+    DestinationCard.tsx
+  pages/
+    CatalogPage.tsx
+    DestinationPage.tsx
+  data/
+    destinations.json
 ```
+
+L'application est pour l'instant construite avec des données locales afin d'avancer rapidement sur le front avant une éventuelle connexion à une API.
+
+## Objectifs à venir
+
+[X] Ajouter d'autres filtres, par exemple langue ou type d'échange
+[X] Améliorer la page détail
+[ ] Ajouter une page favoris ou comparaison (feature en développement)
+[ ] Connecter le front à une API plus tard
+[ ] Ajouter un chatbot d'aide pour l'échange (feature en développement)
+[ ] Ajouter un quiz pour aider à choisir sa destination (feature en développement)
+
+## Auteur
+
+Projet réalisé dans le cadre d'un apprentissage React / développement web.
