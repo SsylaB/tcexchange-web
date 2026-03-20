@@ -122,18 +122,18 @@ function normalizeExchangeType(exchangeType: string): string {
 
 const destinations: Destination[] = rawDestinations.map((d) => ({
   id: d.id,
-  country: d.country,
-  name: d.universityName,
-  dest: `${d.location}, ${d.country}`,
-  type: normalizeExchangeType(d.exchangeType),
+  country: d.country ?? "",
+  name: d.universityName ?? "",
+  dest: `${d.location ?? ""}, ${d.country ?? ""}`,
+  type: normalizeExchangeType(d.exchangeType ?? ""),
   bg: "var(--surface)",
   features: d.languages ?? [],
-  description: d.description,
-  location: d.location,
-  url: d.url,
+  description: d.description ?? "",
+  location: d.location ?? "",
+  url: d.url ?? "",
   languages: d.languages ?? [],
-  shortName: d.shortName,
-  rawExchangeType: d.exchangeType,
+  shortName: d.shortName ?? "",
+  rawExchangeType: d.exchangeType ?? "",
 }));
 
 function stripMarkdown(text: string) {
@@ -662,32 +662,20 @@ function DestinationPicker({
   const normalizedSearch = search.trim().toLowerCase();
 
   const filteredFavorites = favorites.filter(
-    (dest) =>
-      !excludedIds?.includes(dest.id) &&
-      (!normalizedSearch ||
-        dest.name.toLowerCase().includes(normalizedSearch) ||
-        dest.country.toLowerCase().includes(normalizedSearch) ||
-        dest.location.toLowerCase().includes(normalizedSearch) ||
-        dest.shortName.toLowerCase().includes(normalizedSearch))
-  );
+    (dest) => !excludedIds?.includes(dest.id) && matchesSearch(dest, normalizedSearch)
+    );
 
-  const filteredCountries = destinationsByCountry
+    const filteredCountries = destinationsByCountry
     .map(([country, items]) => {
-      const filteredItems = items.filter(
-        (dest) =>
-          !excludedIds?.includes(dest.id) &&
-          (!normalizedSearch ||
-            dest.name.toLowerCase().includes(normalizedSearch) ||
-            dest.country.toLowerCase().includes(normalizedSearch) ||
-            dest.location.toLowerCase().includes(normalizedSearch) ||
-            dest.shortName.toLowerCase().includes(normalizedSearch))
-      );
+        const filteredItems = items.filter(
+        (dest) => !excludedIds?.includes(dest.id) && matchesSearch(dest, normalizedSearch)
+        );
 
-      return [country, filteredItems] as [string, Destination[]];
+        return [country, filteredItems] as [string, Destination[]];
     })
     .filter(([country, items]) => {
-      if (!normalizedSearch) return items.length > 0;
-      return country.toLowerCase().includes(normalizedSearch) || items.length > 0;
+        if (!normalizedSearch) return items.length > 0;
+        return safeText(country).includes(normalizedSearch) || items.length > 0;
     });
 
   return (
@@ -779,6 +767,23 @@ function DestinationPicker({
         </div>
       )}
     </div>
+  );
+}
+
+function safeText(value: unknown): string {
+  return typeof value === "string" ? value.toLowerCase() : "";
+}
+
+function matchesSearch(dest: Destination, search: string) {
+  const q = search.trim().toLowerCase();
+  if (!q) return true;
+
+  return (
+    safeText(dest.name).includes(q) ||
+    safeText(dest.country).includes(q) ||
+    safeText(dest.location).includes(q) ||
+    safeText(dest.shortName).includes(q) ||
+    safeText(dest.type).includes(q)
   );
 }
 
