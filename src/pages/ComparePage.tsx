@@ -103,13 +103,6 @@ const CRITERIA_GROUPS: Record<string, CriteriaGroupMap> = {
   },
 };
 
-const GROUP_COLORS: Record<string, string> = {
-  Logistique: "var(--orange)",
-  Académique: "var(--blue-dark)",
-  "Cadre de vie": "var(--green-light)",
-  Expérience: "var(--red)",
-};
-
 const ANALYSIS_MESSAGES = [
   "Analyse des destinations sélectionnées…",
   "Croisement avec les critères prioritaires…",
@@ -452,7 +445,6 @@ function DestPreview({ dest }: { dest: Destination | null }) {
       className="compare-preview-card"
       style={{ background: dest.bg || "var(--surface)" }}
     >
-      <div className="compare-preview-flag">{dest.flag}</div>
       <div>
         <div className="compare-preview-name">{dest.name}</div>
         <div className="compare-preview-country">{dest.dest}</div>
@@ -645,6 +637,7 @@ function DestinationPicker({
 }) {
   const [open, setOpen] = useState(false);
   const [openCountries, setOpenCountries] = useState<Record<string, boolean>>({});
+  const [search, setSearch] = useState("");
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -666,9 +659,36 @@ function DestinationPicker({
     }));
   }
 
+  const normalizedSearch = search.trim().toLowerCase();
+
   const filteredFavorites = favorites.filter(
-    (dest) => !excludedIds?.includes(dest.id)
+    (dest) =>
+      !excludedIds?.includes(dest.id) &&
+      (!normalizedSearch ||
+        dest.name.toLowerCase().includes(normalizedSearch) ||
+        dest.country.toLowerCase().includes(normalizedSearch) ||
+        dest.location.toLowerCase().includes(normalizedSearch) ||
+        dest.shortName.toLowerCase().includes(normalizedSearch))
   );
+
+  const filteredCountries = destinationsByCountry
+    .map(([country, items]) => {
+      const filteredItems = items.filter(
+        (dest) =>
+          !excludedIds?.includes(dest.id) &&
+          (!normalizedSearch ||
+            dest.name.toLowerCase().includes(normalizedSearch) ||
+            dest.country.toLowerCase().includes(normalizedSearch) ||
+            dest.location.toLowerCase().includes(normalizedSearch) ||
+            dest.shortName.toLowerCase().includes(normalizedSearch))
+      );
+
+      return [country, filteredItems] as [string, Destination[]];
+    })
+    .filter(([country, items]) => {
+      if (!normalizedSearch) return items.length > 0;
+      return country.toLowerCase().includes(normalizedSearch) || items.length > 0;
+    });
 
   return (
     <div ref={wrapperRef} className="compare-picker">
@@ -683,14 +703,22 @@ function DestinationPicker({
         onClick={() => setOpen((v) => !v)}
         className="compare-picker-trigger"
       >
-        {value ? `${value.flag} ${value.name}` : "-- Choisir --"}
+        {value ? value.name : "-- Choisir --"}
       </button>
 
       {open && (
         <div className="compare-picker-panel">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Rechercher un pays ou une université..."
+            className="compare-picker-search"
+          />
+
           {filteredFavorites.length > 0 && (
             <div className="compare-picker-section">
-              <div className="compare-picker-section-title">⭐ Favoris</div>
+              <div className="compare-picker-section-title">Favoris</div>
               <div className="compare-picker-sublist">
                 {filteredFavorites.map((dest) => (
                   <button
@@ -700,16 +728,17 @@ function DestinationPicker({
                     onClick={() => {
                       onSelect(dest);
                       setOpen(false);
+                      setSearch("");
                     }}
                   >
-                    {dest.flag} {dest.name}
+                    {dest.name}
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {destinationsByCountry.map(([country, items]) => (
+          {filteredCountries.map(([country, items]) => (
             <div key={country} className="compare-picker-section">
               <button
                 type="button"
@@ -717,30 +746,36 @@ function DestinationPicker({
                 className="compare-picker-country-button"
               >
                 <span>{country}</span>
-                <span>{openCountries[country] ? "▲" : "▼"}</span>
+                <span>{normalizedSearch ? "•" : openCountries[country] ? "▲" : "▼"}</span>
               </button>
 
-              {openCountries[country] && (
+              {(normalizedSearch || openCountries[country]) && (
                 <div className="compare-picker-sublist">
-                  {items
-                    .filter((dest) => !excludedIds?.includes(dest.id))
-                    .map((dest) => (
-                      <button
-                        key={dest.id}
-                        type="button"
-                        className="compare-picker-item"
-                        onClick={() => {
-                          onSelect(dest);
-                          setOpen(false);
-                        }}
-                      >
-                        {dest.flag} {dest.name}
-                      </button>
-                    ))}
+                  {items.map((dest) => (
+                    <button
+                      key={dest.id}
+                      type="button"
+                      className="compare-picker-item"
+                      onClick={() => {
+                        onSelect(dest);
+                        setOpen(false);
+                        setSearch("");
+                      }}
+                    >
+                      <div className="compare-picker-item-title">{dest.name}</div>
+                      <div className="compare-picker-item-sub">
+                        {dest.location}, {dest.country}
+                      </div>
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
           ))}
+
+          {filteredFavorites.length === 0 && filteredCountries.length === 0 && (
+            <div className="compare-picker-empty">Aucun résultat.</div>
+          )}
         </div>
       )}
     </div>
@@ -1162,26 +1197,22 @@ export default function ComparePage() {
                 </div>
 
                 <div className="compare-analysis-grid">
-                  {orderedSummaries.map((summary, index) => {
-                    const dest = chosenDestinations.find((d) => d.name === summary.name);
-
-                    return (
-                      <div key={summary.name} className="compare-analysis-col">
-                        <div
-                          className={`compare-analysis-header ${
-                            index === 0
-                              ? "compare-analysis-header--red"
-                              : index === 1
-                              ? "compare-analysis-header--blue"
-                              : "compare-analysis-header--green"
-                          }`}
-                        >
-                          {dest?.flag || "🌍"} {summary.name}
-                        </div>
-                        <div className="compare-analysis-body">{summary.analysis || "—"}</div>
+                  {orderedSummaries.map((summary, index) => (
+                    <div key={summary.name} className="compare-analysis-col">
+                      <div
+                        className={`compare-analysis-header ${
+                          index === 0
+                            ? "compare-analysis-header--red"
+                            : index === 1
+                            ? "compare-analysis-header--blue"
+                            : "compare-analysis-header--green"
+                        }`}
+                      >
+                        {summary.name}
                       </div>
-                    );
-                  })}
+                      <div className="compare-analysis-body">{summary.analysis || "—"}</div>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="compare-verdict-box">
