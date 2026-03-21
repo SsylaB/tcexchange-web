@@ -57,12 +57,36 @@
     box-shadow: 0 8px 18px rgba(243, 179, 76, 0.25);
 }
 
-.nav-link--quiz.nav-link--active {
-    background: linear-gradient(135deg, #f06a63, #f6a29d);
+.nav-link--catalog:hover {
+    background: #edbfbc;
+    color: var(--green-dark);
+}
+.nav-link--catalog.nav-link--active {
+    background: linear-gradient(135deg, var(--red), #f6a29d);
 }
 
+.nav-link--quiz:hover {
+    background: #fff1cf;
+    color: var(--green-dark);
+}
+.nav-link--quiz.nav-link--active {
+    background: linear-gradient(135deg, var(--orange), #ffd57b);
+}
+
+.nav-link--chatbot:hover {
+    background: #c5e8f1;
+    color: var(--green-dark);
+}
 .nav-link--chatbot.nav-link--active {
     background: linear-gradient(135deg, var(--blue-light), #9adff0);
+}
+
+.nav-link--compare:hover {
+    background: #c8ecc5;
+    color: var(--green-dark);
+}
+.nav-link--compare.nav-link--active {
+    background: linear-gradient(135deg, var(--green-light), #a7eaa2);
 }
 
 @media (max-width: 900px) {
