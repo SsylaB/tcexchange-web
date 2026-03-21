@@ -1,6 +1,6 @@
 
 function ComparePage() {
-    return <div>Chatbot — coming soon</div>;
+    return <div>Comparaison entre les destinations — coming soon</div>;
 }
 
 export default ComparePage;
