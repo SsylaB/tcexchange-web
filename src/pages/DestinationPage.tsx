@@ -1,7 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import destinations from "../data/destinations.json";
 import { Destination } from "../types";
-import { useFavorites } from "../context/FavoritesContext";
 import "../styles/DestinationPage.css";
 
 const typedDestinations = destinations as Destination[];
@@ -50,9 +49,6 @@ function DestinationPage() {
     const flag = COUNTRY_FLAG[country] ?? "🌍";
     const exchangeEmoji = exchangeType ? EXCHANGE_TYPE_EMOJI[exchangeType] ?? "📋" : null;
 
-    const { isFavorite, toggleFavorite } = useFavorites();
-    const favorited = isFavorite(destination.id);
-
     return (
         <main className="destination-page">
             <Link to="/" className="destination-page__back">← Retour au catalogue</Link>
@@ -91,25 +87,17 @@ function DestinationPage() {
                 ))}
             </div>
 
-            {/* Actions */}
-            <div className="destination-page__actions">
-                <button
-                    className={`destination-page__favorite-btn${favorited ? " destination-page__favorite-btn--active" : ""}`}
-                    onClick={() => toggleFavorite(destination.id)}
+            {/* CTA */}
+            {url && (
+                <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="destination-page__cta"
                 >
-                    {favorited ? "♥ Retirer des favoris" : "♡ Ajouter aux favoris"}
-                </button>
-                {url && (
-                    <a
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="destination-page__cta"
-                    >
-                        Visiter le site officiel →
-                    </a>
-                )}
-            </div>
+                    Visiter le site officiel →
+                </a>
+            )}
 
             {/* Suggestions */}
             {suggestions.length > 0 && (

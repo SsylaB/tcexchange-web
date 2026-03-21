@@ -17,9 +17,6 @@ function Header() {
                 <NavLink to="/chatbot" className={({ isActive }) => isActive ? "nav-link nav-link--active" : "nav-link"}>
                     Chatbot
                 </NavLink>
-                <NavLink to="/compare" className={({ isActive }) => isActive ? "nav-link nav-link--active" : "nav-link"}>
-                    Compare
-                </NavLink>
             </nav>
         </header>
     );
