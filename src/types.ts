@@ -1,11 +1,11 @@
 export interface Destination {
     id: number;
-    universityName: string;
+    university_name: string;
     country: string;
     location: string | null;
     url: string | null;
-    exchangeType?: string;
-    languages?: string[];
+    exchange_type?: string;
+    languages?: string | null;
     description?: string;
-    shortName?: string;
+    short_name?: string;
 }

@@ -1,9 +1,7 @@
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import destinations from "../data/destinations.json";
 import { Destination } from "../types";
 import "../styles/DestinationPage.css";
-
-const typedDestinations = destinations as Destination[];
 
 const EXCHANGE_TYPE_EMOJI: Record<string, string> = {
     "Erasmus": "🇪🇺",
@@ -29,12 +27,42 @@ const COUNTRY_FLAG: Record<string, string> = {
 
 function DestinationPage() {
     const { id } = useParams<{ id: string }>();
-    const destination = typedDestinations.find((item) => item.id === Number(id));
+    const [destination, setDestination] = useState<Destination | null>(null);
+    const [suggestions, setSuggestions] = useState<Destination[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Suggestions : autres destinations du même pays
-    const suggestions = typedDestinations
-        .filter((d) => d.country === destination?.country && d.id !== destination?.id)
-        .slice(0, 3);
+    useEffect(() => {
+        // Fetch all destinations
+        fetch("http://localhost:3000/api/destinations")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch destinations");
+                return res.json();
+            })
+            .then((allDestinations: Destination[]) => {
+                // Find the destination by ID
+                const found = allDestinations.find((d) => d.id === Number(id));
+                setDestination(found || null);
+
+                // Get suggestions (other destinations in same country)
+                if (found) {
+                    const sug = allDestinations
+                        .filter((d) => d.country === found.country && d.id !== found.id)
+                        .slice(0, 3);
+                    setSuggestions(sug);
+                }
+
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Error fetching destination:", err);
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [id]);
+
+    if (loading) return <p>Chargement...</p>;
+    if (error) return <p>Erreur: {error}</p>;
 
     if (!destination) {
         return (
@@ -45,9 +73,10 @@ function DestinationPage() {
         );
     }
 
-    const { universityName, country, location, exchangeType, languages, description, url, shortName } = destination;
+    const { university_name, country, location, exchange_type, languages, description, url, short_name } = destination;
     const flag = COUNTRY_FLAG[country] ?? "🌍";
-    const exchangeEmoji = exchangeType ? EXCHANGE_TYPE_EMOJI[exchangeType] ?? "📋" : null;
+    const exchangeEmoji = exchange_type ? EXCHANGE_TYPE_EMOJI[exchange_type] ?? "📋" : null;
+    const langArray = languages?.split(",").map(l => l.trim()) ?? [];
 
     return (
         <main className="destination-page">
@@ -57,10 +86,10 @@ function DestinationPage() {
             <div className="destination-page__header">
                 <div className="destination-page__flag">{flag}</div>
                 <div>
-                    {shortName && shortName !== universityName.split(" ")[0] && (
-                        <span className="destination-page__shortname">{shortName}</span>
+                    {short_name && short_name !== university_name.split(" ")[0] && (
+                        <span className="destination-page__shortname">{short_name}</span>
                     )}
-                    <h1 className="destination-page__title">{universityName}</h1>
+                    <h1 className="destination-page__title">{university_name}</h1>
                     <div className="destination-page__meta">
                         {location && <span className="destination-page__location">📍 {location}, {country}</span>}
                         {!location && <span className="destination-page__location">📍 {country}</span>}
@@ -75,15 +104,15 @@ function DestinationPage() {
 
             {/* Badges */}
             <div className="destination-page__badges">
-                {exchangeType && (
-                    <span className={`destination-page__badge destination-page__badge--${exchangeType === "Erasmus" ? "erasmus" : "bilateral"}`}>
-            {exchangeEmoji} {exchangeType}
-          </span>
+                {exchange_type && (
+                    <span className={`destination-page__badge destination-page__badge--${exchange_type === "Erasmus" ? "erasmus" : "bilateral"}`}>
+                        {exchangeEmoji} {exchange_type}
+                    </span>
                 )}
-                {languages?.map((lang) => (
+                {langArray.map((lang) => (
                     <span key={lang} className="destination-page__badge destination-page__badge--lang">
-            🗣️ {lang}
-          </span>
+                        🗣️ {lang}
+                    </span>
                 ))}
             </div>
 
@@ -109,7 +138,7 @@ function DestinationPage() {
                         {suggestions.map((s) => (
                             <li key={s.id}>
                                 <Link to={`/destination/${s.id}`} className="destination-page__suggestion-link">
-                                    <strong>{s.shortName}</strong> — {s.universityName}
+                                    <strong>{s.short_name}</strong> — {s.university_name}
                                     {s.location && <span> · {s.location}</span>}
                                 </Link>
                             </li>
