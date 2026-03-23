@@ -6,6 +6,7 @@ import ChatbotPage from "./pages/ChatbotPage";
 import DestinationPage from "./pages/DestinationPage";
 import ComparePage from "./pages/ComparePage";
 import HomePage from "./pages/HomePage";
+import MapPage from "./pages/MapPage";
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                     <Route path="/quiz" element={<QuizPage />} />
                     <Route path="/chatbot" element={<ChatbotPage />} />
                     <Route path="/compare" element={<ComparePage />} />
+                    <Route path="/map" element={<MapPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
