@@ -48,13 +48,7 @@
     inset: 0 0 auto 0;
     height: 8px;
     z-index: 1000;
-    background: linear-gradient(
-        90deg,
-        var(--red) 0%,
-        var(--orange) 35%,
-        var(--blue-light) 70%,
-        var(--green-light) 100%
-    );
+    background: var(--rainbow-gradient)
 }
 
 .map-split__map:hover {
@@ -91,13 +85,7 @@
     inset: 0 0 auto 0;
     height: 8px;
     z-index: 10;
-    background: linear-gradient(
-        90deg,
-        var(--green-light) 0%,
-        var(--blue-light) 35%,
-        var(--orange) 70%,
-        var(--red) 100%
-    );
+    background: var(--rainbow-gradient)
 }
 
 .map-split__panel-inner {
