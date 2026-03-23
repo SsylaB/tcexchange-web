@@ -1,0 +1,79 @@
+/* Conteneur principal de la page de la carte */
+.map-page {
+    max-width: 1000px; /* Un peu plus large que le quiz pour la visibilité */
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    font-family: Inter, Arial, sans-serif;
+    color: var(--text);
+}
+
+.map-page__header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.map-page__title {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    color: var(--green-dark);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+/* Le conteneur qui entoure la carte Leaflet */
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    /* On force une hauteur minimale pour que le Layout ne l'écrase pas */
+    height: 600px; 
+    min-height: 500px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden; /* Important pour que la carte ne dépasse pas des bords arrondis */
+    padding: 0; /* On met le padding à 0 pour coller la carte aux bords */
+    display: flex;
+}
+
+/* La barre dégradée signature en haut */
+.map-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 8px;
+    z-index: 1000; /* Pour passer au-dessus de la carte */
+    background: linear-gradient(
+        90deg,
+        var(--red) 0%,
+        var(--orange) 35%,
+        var(--blue-light) 70%,
+        var(--green-light) 100%
+    );
+}
+
+/* Effet au survol comme sur le quiz */
+.map-wrapper:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 36px rgba(18, 30, 22, 0.12);
+}
+
+/* Style de la carte elle-même */
+.leaflet-container {
+    height: 100%; /* Hauteur de ta carte */
+    width: 100%;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+/* Style des Popups pour matcher les bulles de texte du quiz */
+.leaflet-popup-content-wrapper {
+    background: var(--surface);
+    color: var(--text);
+    border-radius: var(--radius-md);
+    font-family: Inter, sans-serif;
+    box-shadow: var(--shadow-md);
+}
+
+.leaflet-popup-tip {
+    background: var(--surface);
+}
