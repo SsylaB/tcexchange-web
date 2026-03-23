@@ -1,6 +1,5 @@
 :root {
     --bg: #fbfaf6;
-    --bg-gradient-top: #fffdf8;
     --surface: #ffffff;
     --surface-soft: #fff7e8;
     --surface-blue: #eef8fc;
@@ -46,7 +45,7 @@ html {
 body {
     margin: 0;
     font-family: Inter, Arial, sans-serif;
-    background: linear-gradient(180deg, var(--bg-gradient-top) 0%, var(--bg) 100%);
+    background: var(--bg);
     color: var(--text);
 }
 

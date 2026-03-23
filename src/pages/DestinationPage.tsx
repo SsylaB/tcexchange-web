@@ -52,7 +52,7 @@ function DestinationPage() {
         return (
             <main className="destination-page">
                 <p className="destination-page__not-found">Destination introuvable.</p>
-                <Link to="/" className="destination-page__back">← Retour au catalogue</Link>
+                <Link to="/catalog" className="destination-page__back">← Retour au catalogue</Link>
             </main>
         );
     }
@@ -64,7 +64,7 @@ function DestinationPage() {
 
     return (
         <main className="destination-page">
-            <Link to="/" className="destination-page__back">← Retour au catalogue</Link>
+            <Link to="/catalog" className="destination-page__back">← Retour au catalogue</Link>
 
             {/* Header */}
             <div className="destination-page__header">

@@ -10,7 +10,7 @@ function Header() {
                 </NavLink>
             </div>
             <nav className="header__nav">
-                <NavLink to="/" end
+                <NavLink to="/catalog" end
                          className={({ isActive }) =>
                              `nav-link nav-link--catalog${isActive ? " nav-link--active" : ""}`}>
                     Catalogue
