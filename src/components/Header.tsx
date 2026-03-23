@@ -17,7 +17,7 @@ function Header() {
                 </NavLink>
                 <NavLink to="/map"
                          className={({ isActive }) =>
-                             `nav-link nav-link--compare${isActive ? " nav-link--active" : ""}`}>
+                             `nav-link nav-link--map${isActive ? " nav-link--active" : ""}`}>
                     Carte
                 </NavLink>
                 <NavLink to="/quiz"
