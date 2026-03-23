@@ -1,8 +1,7 @@
-/* Conteneur principal de la page de la carte */
 .map-page {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0.75rem 1.5rem 4rem;  /* was 2rem top */
+    padding: 0.75rem 1.5rem 4rem;
     font-family: Inter, Arial, sans-serif;
     color: var(--text);
 }
@@ -19,29 +18,36 @@
     margin-bottom: 0.5rem;
 }
 
-/* Le conteneur qui entoure la carte Leaflet */
-.map-wrapper {
+/* Layout split */
+.map-split {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.map-split__map {
+    flex: 1;
+    height: 550px;
     position: relative;
-    width: 100%;
-    /* On force une hauteur minimale pour que le Layout ne l'écrase pas */
-    height: 550px; 
-    min-height: 500px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
-    overflow: hidden; /* Important pour que la carte ne dépasse pas des bords arrondis */
-    padding: 0; /* On met le padding à 0 pour coller la carte aux bords */
-    display: flex;
+    overflow: hidden;
+    transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* La barre dégradée signature en haut */
-.map-wrapper::before {
+.map-split--open .map-split__map {
+    flex: 0 0 55%;
+}
+
+/* Barre dégradée signature */
+.map-split__map::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
     height: 8px;
-    z-index: 1000; /* Pour passer au-dessus de la carte */
+    z-index: 1000;
     background: linear-gradient(
         90deg,
         var(--red) 0%,
@@ -51,21 +57,180 @@
     );
 }
 
-/* Effet au survol comme sur le quiz */
-.map-wrapper:hover {
-    transform: translateY(-4px);
+.map-split__map:hover {
     box-shadow: 0 18px 36px rgba(18, 30, 22, 0.12);
 }
 
-/* Style de la carte elle-même */
 .leaflet-container {
-    height: 100%; /* Hauteur de ta carte */
+    height: 100%;
     width: 100%;
     z-index: 1;
     border-radius: inherit;
 }
 
-/* Style des Popups pour matcher les bulles de texte du quiz */
+/* Panneau détail */
+.map-split__panel {
+    flex: 0 0 43%;
+    height: 550px;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    animation: slideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Barre dégradée sur le panneau aussi */
+.map-split__panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 8px;
+    z-index: 10;
+    background: linear-gradient(
+        90deg,
+        var(--green-light) 0%,
+        var(--blue-light) 35%,
+        var(--orange) 70%,
+        var(--red) 100%
+    );
+}
+
+.map-split__panel-inner {
+    padding: 1.75rem 1.5rem 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+    margin-top: 8px; /* espace pour la barre */
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.map-split__close {
+    position: absolute;
+    top: 18px;
+    right: 14px;
+    z-index: 20;
+    background: var(--border);
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-soft);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.map-split__close:hover {
+    background: var(--red);
+    color: white;
+}
+
+/* Contenu du panneau */
+.panel__flag {
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+}
+
+.panel__shortname {
+    display: inline-block;
+    background: var(--surface-soft);
+    color: var(--orange-dark);
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.panel__title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--green-dark);
+    line-height: 1.2;
+    margin: 0 0 0.4rem;
+}
+
+.panel__location {
+    color: var(--text-soft);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.panel__description {
+    font-size: 0.9rem;
+    color: var(--text-soft);
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.panel__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.panel__badge--erasmus {
+    background: #dce9ff;
+    color: #1a3a7a;
+}
+
+.panel__badge--bilateral {
+    background: #e8f5e4;
+    color: #1e5c18;
+}
+
+.panel__badge--lang {
+    background: var(--surface-soft);
+    color: var(--orange-dark);
+}
+
+.panel__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: linear-gradient(135deg, var(--green-dark), #174a25);
+    color: white;
+    padding: 0.7rem 1.2rem;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 0.5rem;
+}
+
+.panel__cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(11, 47, 22, 0.22);
+}
+
+/* Popups Leaflet */
 .leaflet-popup-content-wrapper {
     background: var(--surface);
     color: var(--text);
