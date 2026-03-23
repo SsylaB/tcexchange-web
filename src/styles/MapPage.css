@@ -1,14 +1,14 @@
 /* Conteneur principal de la page de la carte */
 .map-page {
-    max-width: 1000px; /* Un peu plus large que le quiz pour la visibilité */
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
+    padding: 0.75rem 1.5rem 4rem;  /* was 2rem top */
     font-family: Inter, Arial, sans-serif;
     color: var(--text);
 }
 
 .map-page__header {
-    margin-bottom: 2rem;
+    margin-bottom: 0.75rem;
     text-align: center;
 }
 
@@ -24,7 +24,7 @@
     position: relative;
     width: 100%;
     /* On force une hauteur minimale pour que le Layout ne l'écrase pas */
-    height: 600px; 
+    height: 550px; 
     min-height: 500px;
     background: var(--surface);
     border: 1px solid var(--border);
@@ -76,4 +76,8 @@
 
 .leaflet-popup-tip {
     background: var(--surface);
+}
+
+.layout__content:has(.map-page) {
+    padding-top: 0;
 }
