@@ -196,11 +196,12 @@ function MapPage() {
                                 ))}
                             </div>
                             {selectedDest.url && (
-                                <a>
+                                <a
                                     href={selectedDest.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="panel__cta"
+                                    >
                                     Visiter le site officiel →
                                 </a>
                             )}
