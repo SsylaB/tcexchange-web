@@ -1,7 +1,17 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "../styles/Header.css";
 
 function Header() {
+    const navigate = useNavigate();
+    const username = localStorage.getItem("username");
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    const handleLogout = () => {
+        localStorage.removeItem("username");
+        navigate("/login");
+    };
+
     return (
         <header className="header">
             <div className="header__logo">
@@ -35,6 +45,16 @@ function Header() {
                              `nav-link nav-link--compare${isActive ? " nav-link--active" : ""}`}>
                     Comparer
                 </NavLink>
+                <div className="nav-user">
+                    <span className="nav-username" onClick={() => setMenuOpen(o => !o)}>
+                        👤 {username}
+                    </span>
+                    {menuOpen && (
+                        <button className="nav-logout" onClick={handleLogout}>
+                            Déconnexion
+                        </button>
+                    )}
+                </div>
             </nav>
         </header>
     );
