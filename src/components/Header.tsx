@@ -15,6 +15,11 @@ function Header() {
                              `nav-link nav-link--catalog${isActive ? " nav-link--active" : ""}`}>
                     Catalogue
                 </NavLink>
+                <NavLink to="/map"
+                         className={({ isActive }) =>
+                             `nav-link nav-link--map${isActive ? " nav-link--active" : ""}`}>
+                    Carte
+                </NavLink>
                 <NavLink to="/quiz"
                          className={({ isActive }) =>
                              `nav-link nav-link--quiz${isActive ? " nav-link--active" : ""}`}>

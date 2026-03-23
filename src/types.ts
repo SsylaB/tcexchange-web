@@ -8,4 +8,5 @@ export interface Destination {
     languages?: string | null;
     description?: string;
     short_name?: string;
+    position?: string;
 }
