@@ -5,7 +5,7 @@ export interface Destination {
     location: string | null;
     url: string | null;
     exchange_type?: string;
-    languages?: string | null;
+    languages?: string | string[] | null;
     description?: string;
     short_name?: string;
     position?: string;
