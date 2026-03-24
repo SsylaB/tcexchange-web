@@ -162,7 +162,11 @@ function MapPage() {
                             )}
                             <h2 className="panel__title">{selectedDest.university_name}</h2>
                             <p className="panel__location">
-                                📍 {selectedDest.location ? `${selectedDest.location}, ` : ''}{selectedDest.country}
+                                {selectedDest.location ? (
+                                    <>📍 {selectedDest.location}, {selectedDest.country}</>
+                                ) : (
+                                    <>📍 {selectedDest.country}</>
+                                )}
                             </p>
                             {selectedDest.description && (
                                 <p className="panel__description">{selectedDest.description}</p>
