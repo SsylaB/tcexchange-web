@@ -85,7 +85,7 @@ function CatalogPage() {
 
     return (
         <main className="catalog-page">
-            <h1 className="catalog-page__title">Catalogue des destinations</h1>
+            <h1 className="page-title page-title--standard page-title--centered">Catalogue des destinations</h1>
 
             <div className="catalog-filters">
                 <div className="catalog-filters__search-row">

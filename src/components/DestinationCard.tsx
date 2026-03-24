@@ -23,7 +23,7 @@ function DestinationCard({ destination } : Props) {
         <>
         <article className="destination-card">
             <div className="destination-card__content">
-                <p className="destination-card__tag">{country}</p>
+                <p className="badge badge--country">{country}</p>
                 <h3 className="destination-card__title">{university_name}</h3>
                 {location && (
                     <p className="destination-card__info">
@@ -36,11 +36,13 @@ function DestinationCard({ destination } : Props) {
                     </p>
                 )}
                 {languages && languages.length > 0 && (
-                    <p className="destination-card__info">
-                        <strong>Langues
-                            :</strong> {typeof languages === "string" ? languages.split(",").map(l => l.trim()).join(", ") : languages?.join(", ") || "N/A"
-                    }
-                    </p>
+                    <div className="destination-card__languages">
+                        {(typeof languages === "string" ? languages.split(",").map(l => l.trim()) : languages).map((lang) => (
+                            <span key={lang} className="badge badge--lang">
+                                🗣️ {lang}
+                            </span>
+                        ))}
+                    </div>
                 )}
             </div>
 

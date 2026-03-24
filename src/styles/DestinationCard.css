@@ -23,34 +23,35 @@
     position: absolute;
     inset: 0 0 auto 0;
     height: 8px;
-    background: var(--rainbow-gradient)
+    background: var(--rainbow-gradient);
 }
 
 .destination-card__content {
     padding-top: 0.5rem;
 }
 
-.destination-card__tag {
-    display: inline-flex;
-    align-items: center;
+.destination-card__languages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+}
+
+.destination-card__content .badge {
     margin: 0 0 0.8rem;
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-    background: #e9f8e7;
-    color: #2e7d32;
-    font-size: 0.82rem;
-    font-weight: 800;
 }
 
 .destination-card__title {
     margin: 0 0 1rem;
-    font-size: 1.75rem;
+    font-size: var(--font-size-2xl);
     line-height: 1.1;
     letter-spacing: -0.02em;
     color: var(--green-dark);
+    font-weight: var(--font-weight-extrabold);
     /* truncation for university names */
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -59,10 +60,12 @@
     margin: 0.4rem 0;
     color: var(--text-soft);
     line-height: 1.45;
+    font-size: var(--font-size-base);
 }
 
 .destination-card__info strong {
     color: var(--text);
+    font-weight: var(--font-weight-bold);
 }
 
 .destination-card__actions {

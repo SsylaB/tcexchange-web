@@ -11,13 +11,6 @@
     text-align: center;
 }
 
-.map-page__title {
-    font-size: clamp(2rem, 3.5vw, 3rem);
-    color: var(--green-dark);
-    line-height: 1.1;
-    margin-bottom: 0.5rem;
-}
-
 /* Layout split */
 .map-split {
     display: flex;
@@ -135,8 +128,8 @@
     display: inline-block;
     background: var(--surface-soft);
     color: var(--orange-dark);
-    font-size: 0.78rem;
-    font-weight: 800;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-extrabold);
     padding: 0.2rem 0.6rem;
     border-radius: 999px;
     margin-bottom: 0.4rem;
@@ -145,8 +138,8 @@
 }
 
 .panel__title {
-    font-size: 1.3rem;
-    font-weight: 800;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-extrabold);
     color: var(--green-dark);
     line-height: 1.2;
     margin: 0 0 0.4rem;
@@ -154,12 +147,12 @@
 
 .panel__location {
     color: var(--text-soft);
-    font-size: 0.9rem;
+    font-size: var(--font-size-base);
     margin-bottom: 1rem;
 }
 
 .panel__description {
-    font-size: 0.9rem;
+    font-size: var(--font-size-base);
     color: var(--text-soft);
     line-height: 1.6;
     margin-bottom: 1.2rem;
@@ -174,29 +167,10 @@
     margin-bottom: 1.2rem;
 }
 
-.panel__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
+.panel__badges .badge {
     padding: 0.3rem 0.75rem;
-    border-radius: 999px;
     font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.panel__badge--erasmus {
-    background: #dce9ff;
-    color: #1a3a7a;
-}
-
-.panel__badge--bilateral {
-    background: #e8f5e4;
-    color: #1e5c18;
-}
-
-.panel__badge--lang {
-    background: var(--surface-soft);
-    color: var(--orange-dark);
+    font-weight: var(--font-weight-bold);
 }
 
 .panel__cta {
@@ -206,9 +180,9 @@
     background: linear-gradient(135deg, var(--green-dark), #174a25);
     color: white;
     padding: 0.7rem 1.2rem;
-    border-radius: 14px;
-    font-weight: 800;
-    font-size: 0.9rem;
+    border-radius: var(--radius-sm);
+    font-weight: var(--font-weight-extrabold);
+    font-size: var(--font-size-base);
     transition: transform 0.2s, box-shadow 0.2s;
     margin-top: 0.5rem;
 }

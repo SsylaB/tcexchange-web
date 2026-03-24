@@ -2,12 +2,6 @@
     margin: 0 auto;
 }
 
-.catalog-page__title {
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 1.5rem;
-}
-
 .catalog-page__count {
     color: #6b7280;
     font-size: 0.95rem;

@@ -73,7 +73,7 @@ function DestinationPage() {
                     {short_name && short_name !== university_name.split(" ")[0] && (
                         <span className="destination-page__shortname">{short_name}</span>
                     )}
-                    <h1 className="destination-page__title">{university_name}</h1>
+                    <h1 className="page-title page-title--large">{university_name}</h1>
                     <div className="destination-page__meta">
                         {location && <span className="destination-page__location">📍 {location}, {country}</span>}
                         {!location && <span className="destination-page__location">📍 {country}</span>}
@@ -89,12 +89,12 @@ function DestinationPage() {
             {/* Badges */}
             <div className="destination-page__badges">
                 {exchange_type && (
-                    <span className={`destination-page__badge destination-page__badge--${exchange_type === "Erasmus" ? "erasmus" : "bilateral"}`}>
+                    <span className={`badge badge--${exchange_type === "Erasmus" ? "erasmus" : "bilateral"}`}>
                         {exchangeEmoji} {exchange_type}
                     </span>
                 )}
                 {langArray.map((lang) => (
-                    <span key={lang} className="destination-page__badge destination-page__badge--lang">
+                    <span key={lang} className="badge badge--lang">
                         🗣️ {lang}
                     </span>
                 ))}
