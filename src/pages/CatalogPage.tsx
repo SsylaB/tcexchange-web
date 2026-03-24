@@ -7,6 +7,7 @@ function CatalogPage() {
     const [destinations, setDestinations] = useState<Destination[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [visibleCount, setVisibleCount] = useState(8);
 
     const [search, setSearch] = useState<string>("");
     const [selectedCountry, setSelectedCountry] = useState<string>("");
@@ -30,6 +31,10 @@ function CatalogPage() {
                 setLoading(false);
             });
     }, []);
+
+    useEffect(() => {
+        setVisibleCount(12);
+    }, [search, selectedCountry, selectedLanguage, selectedExchangeType]);
 
     const countries = useMemo(
         () => [...new Set(destinations.map((d) => d.country))].sort(),
@@ -65,6 +70,8 @@ function CatalogPage() {
 
     const hasActiveFilters =
         search !== "" || selectedCountry !== "" || selectedLanguage !== "" || selectedExchangeType !== "";
+
+    const visibleDestinations = filteredDestinations.slice(0, visibleCount);
 
     function resetFilters() {
         setSearch("");
@@ -140,19 +147,28 @@ function CatalogPage() {
             </p>
 
             <div className="catalog-grid">
-                {filteredDestinations.length === 0 ? (
-                    <p className="catalog-page__empty">
-                        Aucune destination ne correspond à vos critères.{" "}
-                        <button className="catalog-reset--inline" onClick={resetFilters}>
-                            Réinitialiser les filtres
-                        </button>
-                    </p>
-                ) : (
-                    filteredDestinations.map((destination) => (
-                        <DestinationCard key={destination.id} destination={destination} />
-                    ))
-                )}
+                {visibleDestinations.map((destination) => (
+                    <DestinationCard key={destination.id} destination={destination} />
+                ))}
             </div>
+
+            {visibleCount < filteredDestinations.length && (
+                <div className="catalog-load-more-actions">
+                    <button
+                        className="catalog-load-more"
+                        onClick={() => setVisibleCount(prev => prev + 8)}
+                    >
+                        Afficher plus ({filteredDestinations.length - visibleCount} restantes)
+                    </button>
+                    <button
+                        className="catalog-load-more catalog-load-more--secondary"
+                        onClick={() => setVisibleCount(filteredDestinations.length)}
+                    >
+                        Tout afficher
+                    </button>
+                </div>
+            )}
+
         </main>
     );
 }
