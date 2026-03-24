@@ -32,7 +32,7 @@ async def recommend(answers: dict):
         # On utilise un client explicite pour éviter les variables d'env parasites
         client = ollama.Client(host='http://127.0.0.1:11434')
         
-        response = client.chat(model='llama3', messages=[
+        response = client.chat(model='tinyllama', messages=[
             {
                 'role': 'system',
                 'content': 'Tu es un conseiller en mobilité internationale. Propose 3 universités précises basées sur le profil.'
@@ -47,3 +47,7 @@ async def recommend(answers: dict):
     except Exception as e:
         # Si ça plante encore, l'erreur s'affichera proprement dans ton React
         return {"result": f"Erreur de connexion locale : {str(e)}"}
+    
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
