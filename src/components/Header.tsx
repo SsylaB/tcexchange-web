@@ -50,7 +50,7 @@ function Header() {
                         👤 {username}
                     </span>
                     {menuOpen && (
-                        <button className="nav-logout" onClick={handleLogout}>
+                        <button className="nav-logout" onClick={handleLogout} onMouseLeave={() => setMenuOpen(false)}>
                             Déconnexion
                         </button>
                     )}

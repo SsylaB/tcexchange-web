@@ -96,7 +96,7 @@ function CatalogPage() {
                         value={selectedCountry}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCountry(e.target.value)}
                     >
-                        <option value="">🌍 Tous les pays</option>
+                        <option value="">🌍 Pays spécifique</option>
                         {countries.map((country) => (
                             <option key={country} value={country}>{country}</option>
                         ))}
@@ -107,7 +107,7 @@ function CatalogPage() {
                         value={selectedLanguage}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedLanguage(e.target.value)}
                     >
-                        <option value="">🗣️ Toutes les langues</option>
+                        <option value="">🗣️ Langues parlées</option>
                         {languages.map((lang) => (
                             <option key={lang} value={lang}>{lang}</option>
                         ))}
@@ -118,7 +118,7 @@ function CatalogPage() {
                         value={selectedExchangeType}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedExchangeType(e.target.value)}
                     >
-                        <option value="">📋 Tous les types</option>
+                        <option value="">📋 Type d'échange</option>
                         {exchangeTypes.map((type) => (
                             <option key={type} value={type}>{type}</option>
                         ))}
