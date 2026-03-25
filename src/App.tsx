@@ -20,7 +20,6 @@ function App() {
                     <Route path="/catalog" element={<CatalogPage />} />
                     <Route path="/destination/:id" element={<DestinationPage />} />
                     <Route path="/quiz" element={<QuizPage />} />
-                    <Route path="/chatbot" element={<ChatbotPage />} />
                     <Route path="/compare" element={<ComparePage />} />
                     <Route path="/map" element={<MapPage />} />
                 </Route>

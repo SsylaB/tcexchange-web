@@ -7,10 +7,11 @@ type Message = {
 };
 
 export default function Chatbot() {
+  const [isOpen, setIsOpen] = useState(false); // État pour gérer l'ouverture
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: "bot",
-      text: "Bonjour ! Je suis le chatbot TC Exchange. Pose-moi des questions sur les destinations d'échange (pays, universités, villes...)",
+      text: "Bonjour ! Je suis le chatbot TC Exchange. Pose-moi des questions sur les destinations d'échange.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -22,39 +23,25 @@ export default function Chatbot() {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (isOpen) scrollToBottom();
+  }, [messages, isOpen]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
-
-    const userMessage: Message = {
-      sender: "user",
-      text: input,
-    };
-
+    const userMessage: Message = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true);
 
-    // Call AI for response with conversation history
     try {
       const conversationHistory = messages.map((m) => ({
         role: m.sender === "user" ? "user" : "assistant",
         content: m.text,
       }));
       const response = await findBestAnswer(userMessage.text, conversationHistory);
-      const botResponse: Message = {
-        sender: "bot",
-        text: response,
-      };
-      setMessages((prev) => [...prev, botResponse]);
+      setMessages((prev) => [...prev, { sender: "bot", text: response }]);
     } catch (error) {
-      const botResponse: Message = {
-        sender: "bot",
-        text: "Desole, je rencontre un probleme technique. Reessaie dans un instant !",
-      };
-      setMessages((prev) => [...prev, botResponse]);
+      setMessages((prev) => [...prev, { sender: "bot", text: "Problème technique. Réessaie !" }]);
     } finally {
       setIsTyping(false);
     }
@@ -67,150 +54,62 @@ export default function Chatbot() {
     }
   };
 
-  const clearChat = () => {
-    setMessages([
-      {
-        sender: "bot",
-        text: "Conversation effacée. Comment puis-je t'aider ?",
-      },
-    ]);
-  };
-
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                />
-              </svg>
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+      {/* Fenêtre de Chat */}
+      {isOpen && (
+        <div className="mb-4 w-[350px] md:w-[400px] h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 flex items-center justify-between text-white">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+              </div>
+              <span className="font-semibold">TC Assistant</span>
             </div>
-            <div>
-              <h3 className="text-white font-semibold text-lg">TC Exchange Assistant</h3>
-              <p className="text-blue-100 text-sm">En ligne</p>
-            </div>
+            <button onClick={() => setIsOpen(false)} className="hover:bg-white/10 rounded p-1">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
           </div>
-          <button
-            onClick={clearChat}
-            className="text-white/80 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
-            title="Effacer la conversation"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
-          </button>
-        </div>
 
-        {/* Messages */}
-        <div className="h-[450px] overflow-y-auto p-6 bg-gray-50">
-          <div className="space-y-4">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 space-y-4">
             {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  msg.sender === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-2xl px-5 py-3 shadow-sm ${
-                    msg.sender === "user"
-                      ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-md"
-                      : "bg-white text-gray-800 rounded-bl-md border border-gray-200"
-                  }`}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span
-                      className={`text-xs font-medium ${
-                        msg.sender === "user" ? "text-blue-100" : "text-gray-500"
-                      }`}
-                    >
-                      {msg.sender === "user" ? "Toi" : "Assistant"}
-                    </span>
-                  </div>
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {msg.text}
-                  </p>
+              <div key={index} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.sender === "user" ? "bg-blue-600 text-white" : "bg-white border border-gray-200 text-gray-800"}`}>
+                  {msg.text}
                 </div>
               </div>
             ))}
-
-            {/* Typing indicator */}
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
-                  <div className="flex gap-1">
-                    <span
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "0ms" }}
-                    />
-                    <span
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "150ms" }}
-                    />
-                    <span
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "300ms" }}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
             <div ref={messagesEndRef} />
           </div>
-        </div>
 
-        {/* Input */}
-        <div className="bg-white border-t border-gray-200 p-4">
-          <div className="flex gap-3">
+          {/* Input */}
+          <div className="p-3 border-t border-gray-100 flex gap-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Pose ta question sur les échanges..."
-              className="flex-1 px-5 py-3 bg-gray-100 border-0 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              placeholder="Pose ta question..."
+              className="flex-1 bg-gray-100 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
             />
-            <button
-              onClick={handleSend}
-              disabled={!input.trim() || isTyping}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 shadow-lg shadow-blue-500/25"
-            >
-              <span>Envoyer</span>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                />
-              </svg>
+            <button onClick={handleSend} className="bg-blue-600 text-white p-2 rounded-xl hover:bg-blue-700">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
             </button>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Bouton Bulle flottante */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full shadow-lg flex items-center justify-center text-white hover:scale-110 transition-all duration-200"
+      >
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      </button>
     </div>
   );
 }
