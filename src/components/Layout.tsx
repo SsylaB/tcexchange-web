@@ -8,10 +8,9 @@ function Layout() {
         <>
             <Header />
             <div className="layout__content">
-                <Outlet /> {/* ← chaque page s'affiche ici */}
+                <Outlet />
             </div>
-            {/* Le Chatbot est ajouté ici pour être visible sur tout le site */}
-            <Chatbot /> 
+            <Chatbot />
         </>
     );
 }
