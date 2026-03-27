@@ -1,35 +1,32 @@
-import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
-
-const CatalogPage = lazy(() => import("./pages/CatalogPage"));
-const QuizPage = lazy(() => import("./pages/QuizPage"));
-const ChatbotPage = lazy(() => import("./pages/ChatbotPage"));
-const DestinationPage = lazy(() => import("./pages/DestinationPage"));
-const ComparePage = lazy(() => import("./pages/ComparePage"));
-const HomePage = lazy(() => import("./pages/HomePage"));
-const MapPage = lazy(() => import("./pages/MapPage"));
+import LoginPage from "./pages/LoginPage.tsx";
+import CatalogPage from "./pages/CatalogPage";
+import QuizPage from "./pages/QuizPage";
+import ChatbotPage from "./pages/ChatbotPage";
+import DestinationPage from "./pages/DestinationPage";
+import ComparePage from "./pages/ComparePage";
+import HomePage from "./pages/HomePage";
+import MapPage from "./pages/MapPage";
 
 function App() {
-    if (!localStorage.getItem("username")) {
-        localStorage.setItem("username", "guest");
-    }
     return (
         <BrowserRouter>
-            <Suspense fallback={<div>Chargement...</div>}>
-                <Routes>
-                    <Route path="/login" element={<Navigate to="/" />} />
-                    <Route element={<Layout />}>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/catalog" element={<CatalogPage />} />
-                        <Route path="/destination/:id" element={<DestinationPage />} />
-                        <Route path="/quiz" element={<QuizPage />} />
-                        <Route path="/chatbot" element={<ChatbotPage />} />
-                        <Route path="/compare" element={<ComparePage />} />
-                        <Route path="/map" element={<MapPage />} />
-                    </Route>
-                </Routes>
-            </Suspense>
+            <Routes>
+                {/* On garde la route login au cas où tu en as besoin plus tard */}
+                <Route path="/login" element={<LoginPage />} />
+
+                {/* Toutes les autres routes sont maintenant accessibles directement via le Layout */}
+                <Route element={<Layout />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/catalog" element={<CatalogPage />} />
+                    <Route path="/destination/:id" element={<DestinationPage />} />
+                    <Route path="/quiz" element={<QuizPage />} />
+                    <Route path="/chatbot" element={<ChatbotPage />} />
+                    <Route path="/compare" element={<ComparePage />} />
+                    <Route path="/map" element={<MapPage />} />
+                </Route>
+            </Routes>
         </BrowserRouter>
     );
 }

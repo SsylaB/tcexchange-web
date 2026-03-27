@@ -1,12 +1,14 @@
-import { Link } from "react-router-dom";
 import { Destination } from "../types";
+import DestinationModal from "./DestinationModal.tsx";
 import "../styles/DestinationCard.css";
+import {useState} from "react";
 
 interface Props {
     destination: Destination;
 }
 
 function DestinationCard({ destination } : Props) {
+    const [showModal, setShowModal] = useState(false);
     const {
         id,
         university_name,
@@ -18,9 +20,10 @@ function DestinationCard({ destination } : Props) {
     } = destination;
 
     return (
+        <>
         <article className="destination-card">
             <div className="destination-card__content">
-                <p className="destination-card__tag">{country}</p>
+                <p className="badge badge--country">{country}</p>
                 <h3 className="destination-card__title">{university_name}</h3>
                 {location && (
                     <p className="destination-card__info">
@@ -33,10 +36,13 @@ function DestinationCard({ destination } : Props) {
                     </p>
                 )}
                 {languages && languages.length > 0 && (
-                    <p className="destination-card__info">
-                        <strong>Langues :</strong> {typeof languages === "string" ? languages.split(",").map(l => l.trim()).join(", ") : languages?.join(", ") || "N/A"
-                    }
-                    </p>
+                    <div className="destination-card__languages">
+                        {(typeof languages === "string" ? languages.split(",").map(l => l.trim()) : languages).map((lang) => (
+                            <span key={lang} className="badge badge--lang">
+                                🗣️ {lang}
+                            </span>
+                        ))}
+                    </div>
                 )}
             </div>
 
@@ -51,15 +57,21 @@ function DestinationCard({ destination } : Props) {
                         Site officiel
                     </a>
                 )}
-                <Link
-                    to={`/destination/${id}`}
+                <button
+                    onClick={() => setShowModal(true)}
                     className="destination-card__link destination-card__link--primary"
                 >
                     Voir plus
-                </Link>
+                </button>
             </div>
         </article>
-    );
-}
+        {showModal && (
+            <DestinationModal
+                destination={destination}
+                onClose={() => setShowModal(false)}
+            />
+        )}
+    </>
+    )};
 
 export default DestinationCard;

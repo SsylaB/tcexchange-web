@@ -81,7 +81,7 @@ function MapPage() {
     return (
         <div className="map-page">
             <div className="map-page__header">
-                <h1 className="map-page__title">Carte des Échanges</h1>
+                <h1 className="page-title page-title--standard page-title--centered">Carte des Échanges</h1>
                 <p style={{ color: 'var(--text-soft)' }}>Explorez les opportunités autour de vous</p>
             </div>
 
@@ -162,19 +162,23 @@ function MapPage() {
                             )}
                             <h2 className="panel__title">{selectedDest.university_name}</h2>
                             <p className="panel__location">
-                                📍 {selectedDest.location ? `${selectedDest.location}, ` : ''}{selectedDest.country}
+                                {selectedDest.location ? (
+                                    <>📍 {selectedDest.location}, {selectedDest.country}</>
+                                ) : (
+                                    <>📍 {selectedDest.country}</>
+                                )}
                             </p>
                             {selectedDest.description && (
                                 <p className="panel__description">{selectedDest.description}</p>
                             )}
                             <div className="panel__badges">
                                 {selectedDest.exchange_type && (
-                                    <span className={`panel__badge panel__badge--${selectedDest.exchange_type === "Erasmus" ? "erasmus" : "bilateral"}`}>
+                                    <span className={`badge badge--${selectedDest.exchange_type === "Erasmus" ? "erasmus" : "bilateral"}`}>
                                         {exchangeEmoji} {selectedDest.exchange_type}
                                     </span>
                                 )}
                                 {langArray.map((lang) => (
-                                    <span key={lang} className="panel__badge panel__badge--lang">
+                                    <span key={lang} className="badge badge--lang">
                                         🗣️ {lang}
                                     </span>
                                 ))}

@@ -7,6 +7,7 @@ function CatalogPage() {
     const [destinations, setDestinations] = useState<Destination[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [visibleCount, setVisibleCount] = useState(8);
 
     const [search, setSearch] = useState<string>("");
     const [selectedCountry, setSelectedCountry] = useState<string>("");
@@ -30,6 +31,10 @@ function CatalogPage() {
                 setLoading(false);
             });
     }, []);
+
+    useEffect(() => {
+        setVisibleCount(12);
+    }, [search, selectedCountry, selectedLanguage, selectedExchangeType]);
 
     const countries = useMemo(
         () => [...new Set(destinations.map((d) => d.country))].sort(),
@@ -66,6 +71,8 @@ function CatalogPage() {
     const hasActiveFilters =
         search !== "" || selectedCountry !== "" || selectedLanguage !== "" || selectedExchangeType !== "";
 
+    const visibleDestinations = filteredDestinations.slice(0, visibleCount);
+
     function resetFilters() {
         setSearch("");
         setSelectedCountry("");
@@ -78,7 +85,7 @@ function CatalogPage() {
 
     return (
         <main className="catalog-page">
-            <h1 className="catalog-page__title">Catalogue des destinations</h1>
+            <h1 className="page-title page-title--standard page-title--centered">Catalogue des destinations</h1>
 
             <div className="catalog-filters">
                 <div className="catalog-filters__search-row">
@@ -96,7 +103,7 @@ function CatalogPage() {
                         value={selectedCountry}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCountry(e.target.value)}
                     >
-                        <option value="">🌍 Tous les pays</option>
+                        <option value="">🌍 Pays spécifique</option>
                         {countries.map((country) => (
                             <option key={country} value={country}>{country}</option>
                         ))}
@@ -107,7 +114,7 @@ function CatalogPage() {
                         value={selectedLanguage}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedLanguage(e.target.value)}
                     >
-                        <option value="">🗣️ Toutes les langues</option>
+                        <option value="">🗣️ Langues parlées</option>
                         {languages.map((lang) => (
                             <option key={lang} value={lang}>{lang}</option>
                         ))}
@@ -118,7 +125,7 @@ function CatalogPage() {
                         value={selectedExchangeType}
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedExchangeType(e.target.value)}
                     >
-                        <option value="">📋 Tous les types</option>
+                        <option value="">📋 Type d'échange</option>
                         {exchangeTypes.map((type) => (
                             <option key={type} value={type}>{type}</option>
                         ))}
@@ -140,19 +147,28 @@ function CatalogPage() {
             </p>
 
             <div className="catalog-grid">
-                {filteredDestinations.length === 0 ? (
-                    <p className="catalog-page__empty">
-                        Aucune destination ne correspond à vos critères.{" "}
-                        <button className="catalog-reset--inline" onClick={resetFilters}>
-                            Réinitialiser les filtres
-                        </button>
-                    </p>
-                ) : (
-                    filteredDestinations.map((destination) => (
-                        <DestinationCard key={destination.id} destination={destination} />
-                    ))
-                )}
+                {visibleDestinations.map((destination) => (
+                    <DestinationCard key={destination.id} destination={destination} />
+                ))}
             </div>
+
+            {visibleCount < filteredDestinations.length && (
+                <div className="catalog-load-more-actions">
+                    <button
+                        className="catalog-load-more"
+                        onClick={() => setVisibleCount(prev => prev + 8)}
+                    >
+                        Afficher plus ({filteredDestinations.length - visibleCount} restantes)
+                    </button>
+                    <button
+                        className="catalog-load-more catalog-load-more--secondary"
+                        onClick={() => setVisibleCount(filteredDestinations.length)}
+                    >
+                        Tout afficher
+                    </button>
+                </div>
+            )}
+
         </main>
     );
 }

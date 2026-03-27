@@ -1,11 +1,13 @@
+/* --- Page quiz --- */
 .quiz-page {
-    max-width: 860px;
+    max-width: 860px; /* même largeur que CatalogPage */
     margin: 0 auto;
     padding: 2rem 1.5rem 4rem;
     font-family: Inter, Arial, sans-serif;
     color: var(--text);
 }
 
+/* Header du quiz – aligné comme le catalogue */
 .quiz-page__header {
     margin-bottom: 2rem;
 }
@@ -17,6 +19,7 @@
     text-align:center;
 }
 
+/* Container du quiz – carte indépendante et centrée */
 .quiz-container {
     max-width: 500px;
     margin: 0 auto;
@@ -52,6 +55,7 @@
     box-shadow: 0 18px 36px rgba(18, 30, 22, 0.12);
 }
 
+/* Step indicator */
 .step-indicator {
     font-size: 0.85rem;
     color: var(--text-soft);
@@ -60,7 +64,7 @@
     letter-spacing: 1px;
 }
 
-
+/* Question */
 .quiz-question {
     font-size: 1.4rem;
     font-weight: 600;
@@ -70,7 +74,7 @@
     animation: fadeIn 0.3s ease-in;
 }
 
-
+/* Options grid */
 .options-grid {
     display: flex;
     flex-direction: column;
@@ -104,7 +108,7 @@
     transform: scale(0.98);
 }
 
-
+/* Loader */
 .loader-box {
     display: flex;
     flex-direction: column;
@@ -145,7 +149,7 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-
+/* Bouton refaire quiz */
 .quiz-page__button {
     display: inline-flex;
     align-items: center;
@@ -165,4 +169,96 @@
 .quiz-page__button:hover {
     transform: translateY(-1px);
     box-shadow: 0 10px 18px rgba(11, 47, 22, 0.22);
+}
+
+/* --- Nouveaux styles pour les résultats --- */
+
+/* On élargit le container pour les résultats car il y a 3 cartes */
+.results-container {
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.recommendation-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.recommendation-item:hover {
+    transform: translateX(10px);
+    border-color: var(--blue-light);
+}
+
+.rec-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rec-badge {
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.rec-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--green-dark);
+}
+
+.rec-country {
+    color: var(--text-soft);
+    font-weight: 400;
+}
+
+.rec-avis {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+    border-left: 3px solid var(--orange);
+    padding-left: 1rem;
+}
+
+.rec-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.rec-tag {
+    background: rgba(0, 123, 255, 0.08); /* une touche de bleu très léger */
+    color: var(--blue-light);
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid rgba(0, 123, 255, 0.1);
+}
+
+.error-box {
+    background: #fff5f5;
+    color: var(--red);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--red);
+    text-align: center;
 }
