@@ -1,29 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import rawData from "../data/destinations.json";
 import "../styles/ComparePage.css";
 
-import type { AiResult, ChatMessage, CriteriaGroupMap, Destination } from "../types/compare";
-import { callOllamaMultiCompare, callOllamaMultiTable, callOllamaFollowup } from "../utils/ollama";
+import type { AiResult, ChatMessage, Destination } from "../types/compare";
+import { callOllamaMultiCompare, callOllamaFollowup } from "../utils/ollama";
 import { normalizeExchangeType, getOrderedSummaries } from "../utils/compareUtils";
+import { computeTableRows } from "../utils/criteriaMatch";
 import { useFavorites } from "../context/FavoritesContext";
-import CriteriaGroup from "../components/CriteriaGroup";
 import MultiCompareTable from "../components/MultiCompareTable";
 import DestinationPicker from "../components/DestinationPicker";
 
 type RawDestination = {
   id: number;
   country: string;
-  universityName: string;
-  location: string;
-  url: string;
-  languages: string[];
-  description: string;
-  shortName: string;
-  exchangeType: string;
+  university_name: string;
+  location: string | null;
+  url: string | null;
+  languages: string | null;
+  description?: string;
+  short_name?: string;
+  exchange_type?: string;
 };
 
-const CRITERIA_GROUPS: Record<string, CriteriaGroupMap> = {
+const CRITERIA_GROUPS: Record<string, Record<string, string[]>> = {
   "Type d'échange" : {
     "Erasmus+": ["erasmus"],
     "Bilatéral": ["bilateral"],
@@ -43,8 +42,11 @@ const CRITERIA_GROUPS: Record<string, CriteriaGroupMap> = {
     Allemand: ["de"],
     Italien: ["it"],
     "Langue asiatique": ["asia-lang"],
+    "Apprentissage de langue": ["lang-learn"],
   },
-
+  "Cours et UE" : {
+    "(HOP) : Hertzian Optical Propagation": ["hop"],
+  },
   Académique: {
     "Intensité forte": ["intense"],
     "Ambiance équilibrée": ["balanced"],
@@ -59,11 +61,6 @@ const CRITERIA_GROUPS: Record<string, CriteriaGroupMap> = {
     "Secteur Industrie": ["sector-indus"],
   },
   "Cadre de vie": {
-    Anglophone: ["en"],
-    Hispanophone: ["es"],
-    Germanophone: ["de"],
-    Italophone: ["it"],
-    "Langue asiatique": ["asia-lang"],
     "Climat chaud": ["chaud"],
     "Climat froid": ["froid"],
     "Grande métropole": ["grande-ville"],
@@ -76,9 +73,21 @@ const CRITERIA_GROUPS: Record<string, CriteriaGroupMap> = {
     "Sport & outdoor": ["outdoor"],
     "Networking pro": ["networking", "pro"],
     "Immersion culturelle": ["learn-culture"],
-    "Apprentissage de langue": ["lang-learn"],
   },
 };
+
+function groupSlug(name: string): string {
+  const map: Record<string, string> = {
+    "Type d'échange": "type",
+    "Budget": "budget",
+    "Géographie": "geo",
+    "Langues": "lang",
+    "Académique": "acad",
+    "Cadre de vie": "cadre",
+    "Expérience": "exp",
+  };
+  return map[name] ?? "exp";
+}
 
 const ANALYSIS_MESSAGES = [
   "Analyse des destinations sélectionnées…",
@@ -89,23 +98,24 @@ const ANALYSIS_MESSAGES = [
   "Finalisation de la synthèse…",
 ];
 
-const rawDestinations = rawData as RawDestination[];
-
-const destinations: Destination[] = rawDestinations.map((d) => ({
-  id: d.id,
-  country: d.country ?? "",
-  name: d.universityName ?? "",
-  dest: `${d.location ?? ""}, ${d.country ?? ""}`,
-  type: normalizeExchangeType(d.exchangeType ?? ""),
-  bg: "var(--surface)",
-  features: d.languages ?? [],
-  description: d.description ?? "",
-  location: d.location ?? "",
-  url: d.url ?? "",
-  languages: d.languages ?? [],
-  shortName: d.shortName ?? "",
-  rawExchangeType: d.exchangeType ?? "",
-}));
+function mapDestination(d: RawDestination): Destination {
+  const langs = d.languages ? d.languages.split(",").map((l) => l.trim()) : [];
+  return {
+    id: d.id,
+    country: d.country ?? "",
+    name: d.university_name ?? "",
+    dest: `${d.location ?? ""}, ${d.country ?? ""}`,
+    type: normalizeExchangeType(d.exchange_type ?? ""),
+    bg: "var(--surface)",
+    features: langs,
+    description: d.description ?? "",
+    location: d.location ?? "",
+    url: d.url ?? "",
+    languages: langs,
+    shortName: d.short_name ?? "",
+    rawExchangeType: d.exchange_type ?? "",
+  };
+}
 
 function SectionCard({
   children,
@@ -117,27 +127,18 @@ function SectionCard({
   return <section className={`compare-card ${className}`.trim()}>{children}</section>;
 }
 
-function DestPreview({ dest }: { dest: Destination | null }) {
-  if (!dest) {
-    return (
-      <div className="compare-empty-preview">
-        <span>Aucune destination sélectionnée</span>
-      </div>
-    );
-  }
-  return (
-    <div className="compare-preview-card" style={{ background: dest.bg || "var(--surface)" }}>
-      <div>
-        <div className="compare-preview-name">{dest.name}</div>
-        <div className="compare-preview-country">{dest.dest}</div>
-        <div className="compare-preview-badge">{dest.type}</div>
-      </div>
-    </div>
-  );
-}
 
 export default function ComparePage() {
   const { favorites: favoriteIds } = useFavorites();
+
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/destinations")
+      .then((res) => res.json())
+      .then((data: RawDestination[]) => setDestinations(data.map(mapDestination)))
+      .catch(console.error);
+  }, []);
 
   const [selectedDestinations, setSelectedDestinations] = useState<Array<Destination | null>>(
     [null, null]
@@ -188,11 +189,11 @@ export default function ComparePage() {
       grouped[country].sort((a, b) => a.name.localeCompare(b.name));
     }
     return Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b));
-  }, []);
+  }, [destinations]);
 
   const favoriteDestinations = useMemo(
     () => destinations.filter((dest) => favoriteIds.includes(dest.id)).sort((a, b) => a.name.localeCompare(b.name)),
-    [favoriteIds]
+    [favoriteIds, destinations]
   );
 
   const orderedSummaries = useMemo(
@@ -285,10 +286,9 @@ export default function ComparePage() {
     }
 
     try {
-      const [textResult, tableRows] = await Promise.all([
-        callOllamaMultiCompare(chosenDestinations, [...selectedCriteria]),
-        callOllamaMultiTable(chosenDestinations, criteriaWithGroups),
-      ]);
+      const textResult = await callOllamaMultiCompare(chosenDestinations, [...selectedCriteria]);
+      const summaries = Object.fromEntries(textResult.destinationSummaries.map((s) => [s.name, s.analysis]));
+      const tableRows = computeTableRows(chosenDestinations, criteriaWithGroups, summaries);
       setAiResult({ ...textResult, tableRows });
       setAiState("done");
     } catch (e) {
@@ -368,6 +368,7 @@ export default function ComparePage() {
                   >
                     Destination {index + 1}
                   </label>
+                  {dest && <span className="compare-selector-badge">{dest.type}</span>}
                   {selectedDestinations.length > 2 && (
                     <button
                       type="button"
@@ -389,7 +390,6 @@ export default function ComparePage() {
                   accentColor="var(--green-dark)"
                 />
 
-                <DestPreview dest={dest} />
               </div>
             );
           })}
@@ -420,15 +420,25 @@ export default function ComparePage() {
           </div>
         </div>
 
-        <div className="compare-criteria-grid">
+        <div className="compare-criteria-pills-container">
           {Object.entries(CRITERIA_GROUPS).map(([group, criteria]) => (
-            <CriteriaGroup
-              key={group}
-              groupName={group}
-              criteria={criteria}
-              selected={selectedCriteria}
-              onToggle={toggleCriterion}
-            />
+            <div key={group} className="compare-criteria-pill-group">
+              <div className={`compare-criteria-pill-header compare-criteria-pill-header--${groupSlug(group)}`}>
+                {group}
+              </div>
+              <div className="compare-criteria-pill-list">
+                {Object.keys(criteria).map((label) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => toggleCriterion(label)}
+                    className={`compare-criteria-pill${selectedCriteria.has(label) ? ` compare-criteria-pill--active compare-criteria-pill--active-${groupSlug(group)}` : ""}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
 
@@ -472,11 +482,10 @@ export default function ComparePage() {
 
             {aiState === "error" && (
               <div className="compare-error-box">
-                <strong>Erreur de connexion à Ollama</strong>
+                <strong>Erreur de connexion à Gemini</strong>
                 <p style={{ margin: "0.65rem 0 0" }}>{aiError}</p>
                 <p style={{ margin: "0.65rem 0 0", color: "var(--text-soft)" }}>
-                  Vérifiez que <code>ollama serve</code> est lancé et que le modèle
-                  <code> llama3</code> est disponible.
+                 Vérifiez que votre clé API Gemini est bien définie dans <code>.env.local</code>.
                 </p>
               </div>
             )}

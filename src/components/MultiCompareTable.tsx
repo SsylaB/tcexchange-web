@@ -2,10 +2,13 @@ import type { ReactNode } from "react";
 import type { Destination, TableRow } from "../types/compare";
 
 function getGroupRowClass(group: string) {
-  if (group === "Logistique") return "compare-group-row--logistique";
-  if (group === "Académique") return "compare-group-row--academique";
-  if (group === "Cadre de vie") return "compare-group-row--cadre";
-  return "compare-group-row--experience";
+  if (group === "Type d'échange") return "compare-group-row--type";
+  if (group === "Budget")         return "compare-group-row--budget";
+  if (group === "Géographie")     return "compare-group-row--geo";
+  if (group === "Langues")        return "compare-group-row--lang";
+  if (group === "Académique")     return "compare-group-row--acad";
+  if (group === "Cadre de vie")   return "compare-group-row--cadre";
+  return "compare-group-row--exp";
 }
 
 function colorClass(prefix: string, index: number) {

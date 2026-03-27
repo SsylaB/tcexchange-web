@@ -1,137 +1,153 @@
-import type { AiResult, ChatMessage, Destination, TableRow } from "../types/compare";
-import { stripMarkdown, safeParseJson } from "./compareUtils";
+import { GoogleGenAI, Type } from "@google/genai";
+import type { AiResult, ChatMessage, Destination } from "../types/compare";
+import { stripMarkdown } from "./compareUtils";
 
-async function ollamaGenerate(prompt: string) {
-  const response = await fetch("http://localhost:11434/api/generate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "llama3", prompt, stream: false }),
-  });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-  if (!response.ok) throw new Error(`Ollama error ${response.status}`);
+if (!apiKey) {
+  console.warn("VITE_GEMINI_API_KEY is missing");
+}
 
-  const data = await response.json();
-  return String(data.response || "");
+const ai = new GoogleGenAI({
+  apiKey,
+});
+
+const MODEL_NAME = "gemini-2.5-flash";
+
+function cleanText(value: unknown): string {
+  return stripMarkdown(String(value || "")).trim();
+}
+
+async function geminiGenerateText(prompt: string): Promise<string> {
+  if (!apiKey) {
+    throw new Error("Clé API Gemini manquante. Ajoute VITE_GEMINI_API_KEY dans ton fichier .env.local");
+  }
+
+  try {
+    const response = await ai.models.generateContent({
+      model: MODEL_NAME,
+      contents: prompt,
+    });
+
+    return cleanText(response.text);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Gemini error: ${error.message}`);
+    }
+    throw new Error("Erreur inconnue lors de l'appel à Gemini");
+  }
 }
 
 export async function callOllamaMultiCompare(
   selectedDestinations: Destination[],
   selectedCriteria: string[]
 ) {
+  if (selectedDestinations.length < 2) {
+    throw new Error("Au moins deux destinations sont requises");
+  }
+
+  const destinationNames = selectedDestinations.map((d) => d.name);
+
   const destinationsBlock = selectedDestinations
     .map(
-      (d, i) => `
-DESTINATION_${i + 1}
+      (d, i) => `DESTINATION_${i + 1}
 name: ${d.name}
 country: ${d.country}
 location: ${d.location}
 type: ${d.type}
 languages: ${(d.languages || []).join(", ") || "Non précisé"}
-description: ${d.description || "Non précisé"}
-`
+description: ${d.description || "Non précisé"}`
     )
-    .join("\n");
+    .join("\n\n");
 
-  const prompt = `Tu compares plusieurs destinations universitaires pour un étudiant INSA TC.
+  try {
+    const response = await ai.models.generateContent({
+      model: MODEL_NAME,
+      contents: `Tu es un conseiller Erasmus/échange universitaire qui parle directement à un étudiant INSA LYON en Télécommunications.
+Tu compares des destinations et tu t'adresses à l'étudiant avec "tu".
+Réponds en français. Sois concret, enthousiaste et utile.
 
-Critères importants :
+Critères importants pour l'étudiant pour la comparaison :
 ${selectedCriteria.join(", ")}
 
-Destinations :
+Destinations choisies pour la comparaison :
 ${destinationsBlock}
 
-Retourne uniquement un JSON valide, sans texte avant ni après, exactement sous cette forme :
+Consignes :
+- Parle directement à l'étudiant avec "tu" (ex: "Si tu veux une vie sociale animée, tu seras servi à Barcelone...")
+- Sois comparatif et concret dans chaque analyse.
+- Le verdict doit être une recommandation personnelle à l'étudiant.
+- Utilise exactement les noms de destinations fournis.`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            destinationSummaries: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  name: { type: Type.STRING },
+                  analysis: { type: Type.STRING },
+                },
+                required: ["name", "analysis"],
+              },
+            },
+            ranking: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+            verdict: { type: Type.STRING },
+          },
+          required: ["destinationSummaries", "ranking", "verdict"],
+        },
+      },
+    });
 
-{
-  "destinationSummaries": [
-    {
-      "name": "nom exact de la destination",
-      "analysis": "4 à 6 phrases utiles, concrètes et comparatives"
-    }
-  ],
-  "ranking": ["nom exact 1", "nom exact 2"],
-  "verdict": "3 à 5 phrases finales avec recommandation globale"
-}
+    const raw = cleanText(response.text);
+    const parsed = JSON.parse(raw) as {
+      destinationSummaries?: Array<{ name?: string; analysis?: string }>;
+      ranking?: string[];
+      verdict?: string;
+    };
 
-Règles :
-- "destinationSummaries" doit contenir toutes les destinations fournies.
-- "ranking" doit contenir toutes les destinations du meilleur au moins adapté.
-- Réponds en français.
-- Pas de markdown.
-- Utilise exactement les noms donnés.`;
+    const normalizedSummaries = selectedDestinations.map((d) => {
+      const found = parsed.destinationSummaries?.find(
+        (item) => item.name?.trim() === d.name
+      );
+      return {
+        name: d.name,
+        analysis: cleanText(found?.analysis || "Analyse indisponible."),
+      };
+    });
 
-  const raw = await ollamaGenerate(prompt);
-  const parsed = safeParseJson<{
-    destinationSummaries?: Array<{ name?: string; analysis?: string }>;
-    ranking?: string[];
-    verdict?: string;
-  }>(raw);
+    const normalizedRanking =
+      parsed.ranking?.filter((name) => destinationNames.includes(name)) || [];
 
-  if (!parsed) {
+    const finalRanking =
+      normalizedRanking.length === selectedDestinations.length
+        ? normalizedRanking
+        : selectedDestinations.map((d) => d.name);
+
+    return {
+      destinationSummaries: normalizedSummaries,
+      ranking: finalRanking,
+      verdict: cleanText(parsed.verdict || "Aucun verdict généré."),
+    };
+  } catch (error) {
+    const fallbackText =
+      error instanceof Error ? error.message : "Aucun verdict généré.";
+
     return {
       destinationSummaries: selectedDestinations.map((d) => ({
         name: d.name,
         analysis: "Analyse indisponible.",
       })),
       ranking: selectedDestinations.map((d) => d.name),
-      verdict: stripMarkdown(raw) || "Aucun verdict généré.",
+      verdict: cleanText(fallbackText),
     };
   }
-
-  return {
-    destinationSummaries: selectedDestinations.map((d) => {
-      const found = parsed.destinationSummaries?.find(
-        (item) => item.name?.trim() === d.name
-      );
-      return {
-        name: d.name,
-        analysis: stripMarkdown(found?.analysis || "Analyse indisponible."),
-      };
-    }),
-    ranking:
-      parsed.ranking?.filter((name) =>
-        selectedDestinations.some((d) => d.name === name)
-      ) || selectedDestinations.map((d) => d.name),
-    verdict: stripMarkdown(parsed.verdict || "Aucun verdict généré."),
-  };
-}
-
-export async function callOllamaMultiTable(
-  selectedDestinations: Destination[],
-  criteriaWithGroups: Array<{ group: string; label: string }>
-): Promise<TableRow[]> {
-  const destinationNames = selectedDestinations.map((d) => d.name).join(" | ");
-  const lines = criteriaWithGroups.map((c) => c.label).join("\n");
-
-  const prompt = `Tu évalues ${selectedDestinations.length} destinations universitaires pour un étudiant ingénieur INSA TC.
-
-Ordre des destinations :
-${destinationNames}
-
-Pour chaque critère ci-dessous, réponds sur UNE seule ligne avec ${selectedDestinations.length} valeurs séparées par des points-virgules.
-Chaque valeur doit être "oui" ou "non".
-Respecte strictement l'ordre des destinations ci-dessus.
-Ne réponds rien d'autre.
-
-Exemple pour 3 destinations :
-oui;non;oui
-
-Critères :
-${lines}`;
-
-  const raw = await ollamaGenerate(prompt);
-  const linesOut = raw
-    .split("\n")
-    .map((line) => line.trim().toLowerCase())
-    .filter((line) => line.includes(";") || line === "oui" || line === "non");
-
-  return criteriaWithGroups.map((criterion, index) => {
-    const parts = (linesOut[index] || "").split(";").map((v) => v.trim());
-    const matches = selectedDestinations.map((_, destIndex) =>
-      /oui|yes|true/.test(parts[destIndex] || "")
-    );
-    return { group: criterion.group, label: criterion.label, matches };
-  });
 }
 
 export async function callOllamaFollowup(
@@ -158,9 +174,10 @@ export async function callOllamaFollowup(
     .map((m) => `${m.role === "user" ? "Étudiant" : "Assistant"}: ${m.content}`)
     .join("\n");
 
-  const prompt = `Tu es un mini assistant de suivi de comparaison pour un étudiant INSA TC.
-Tu réponds uniquement sur la comparaison en cours.
-Tu es concis, utile, précis, et tu ne renvoies pas vers un grand chatbot.
+  const prompt = `Tu es un conseiller Erasmus/échange qui parle directement à un étudiant INSA TC.
+Tu réponds uniquement sur la comparaison en cours, en tutoyant l'étudiant.
+Tu es concis, utile, précis. Tu n'utilises pas de markdown.
+Tu ne renvoies pas vers un autre chatbot.
 
 Destinations comparées :
 ${destinationsBlock}
@@ -183,7 +200,7 @@ ${historyBlock || "Aucun"}
 Nouvelle question de l'étudiant :
 ${question}
 
-Réponds en français, en 3 à 8 phrases maximum, sans markdown.`;
+Réponds en français, en t'adressant directement à l'étudiant avec "tu", en 3 à 8 phrases maximum.`;
 
-  return stripMarkdown(await ollamaGenerate(prompt));
+  return cleanText(await geminiGenerateText(prompt));
 }
