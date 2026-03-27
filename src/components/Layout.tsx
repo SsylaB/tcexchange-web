@@ -31,12 +31,8 @@ function Layout() {
             </footer>
 
             <ScrollToTop />
-<<<<<<< HEAD
             <Chatbot />
-        </>
-=======
         </div>
->>>>>>> fbe1a60 (Redesign Home page and login page)
     );
 }
 

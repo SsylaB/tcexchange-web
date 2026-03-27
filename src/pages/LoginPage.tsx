@@ -10,7 +10,6 @@ export default function LoginPage() {
 
     const handleLogin = async (e: React.ChangeEvent) => {
         e.preventDefault();
-<<<<<<< HEAD
         const res = await fetch("/api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -20,29 +19,6 @@ export default function LoginPage() {
             const data = await res.json();
             localStorage.setItem("username", data.username);
             navigate("/");
-=======
-        setIsLoading(true);
-        setError("");
-
-        try {
-            const res = await fetch("http://localhost:3000/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username }),
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                localStorage.setItem("username", data.username);
-                navigate("/");
-            } else {
-                setError("Utilisateur non reconnu ou erreur serveur.");
-            }
-        } catch (err) {
-            setError("Impossible de contacter le serveur.");
-        } finally {
-            setIsLoading(false);
->>>>>>> fbe1a60 (Redesign Home page and login page)
         }
     };
 
