@@ -1,6 +1,9 @@
 :root {
     --bg: #fbfaf6;
+<<<<<<< HEAD
     --bg-gradient-top: #fffdf8;
+=======
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
     --surface: #ffffff;
     --surface-soft: #fff7e8;
     --surface-blue: #eef8fc;
@@ -12,7 +15,12 @@
     --green-dark: #0b2f16;
     --green-light: #66c85f;
     --red: #e45a52;
+<<<<<<< HEAD
     --orange: #f3b34c;
+=======
+    --yellow: #fade2e;
+    --orange: #f8a51e;
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
     --orange-dark: #e09a25;
 
     --blue-light: #5bc0de;
@@ -23,6 +31,18 @@
     --radius-sm: 14px;
     --radius-md: 20px;
     --radius-lg: 26px;
+<<<<<<< HEAD
+=======
+
+    --rainbow-gradient: linear-gradient(
+            90deg,
+            var(--red) 0%,
+            var(--orange) 25%,
+            var(--yellow) 50%,
+            var(--green-light) 75%,
+            var(--blue-light) 100%
+    );
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 }
 
 * {
@@ -36,7 +56,11 @@ html {
 body {
     margin: 0;
     font-family: Inter, Arial, sans-serif;
+<<<<<<< HEAD
     background: linear-gradient(180deg, var(--bg-gradient-top) 0%, var(--bg) 100%);
+=======
+    background: var(--bg);
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
     color: var(--text);
 }
 

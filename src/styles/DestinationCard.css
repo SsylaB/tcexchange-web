@@ -23,6 +23,7 @@
     position: absolute;
     inset: 0 0 auto 0;
     height: 8px;
+<<<<<<< HEAD
     background: linear-gradient(
             90deg,
             var(--red) 0%,
@@ -30,6 +31,9 @@
             var(--blue-light) 70%,
             var(--green-light) 100%
     );
+=======
+    background: var(--rainbow-gradient)
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 }
 
 .destination-card__content {

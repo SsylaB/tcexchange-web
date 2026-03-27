@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import '../styles/QuizPage.css';
 
@@ -91,3 +92,11 @@ export default function Quiz() {
     </main>
   );
 }
+=======
+
+function QuizPage() {
+    return <div>Quiz d'orientation — coming soon</div>;
+}
+
+export default QuizPage;
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c

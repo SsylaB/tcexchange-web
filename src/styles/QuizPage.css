@@ -1,13 +1,21 @@
+<<<<<<< HEAD
 /* --- Page quiz --- */
 .quiz-page {
     max-width: 860px; /* même largeur que CatalogPage */
+=======
+.quiz-page {
+    max-width: 860px;
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
     margin: 0 auto;
     padding: 2rem 1.5rem 4rem;
     font-family: Inter, Arial, sans-serif;
     color: var(--text);
 }
 
+<<<<<<< HEAD
 /* Header du quiz – aligné comme le catalogue */
+=======
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 .quiz-page__header {
     margin-bottom: 2rem;
 }
@@ -19,7 +27,10 @@
     text-align:center;
 }
 
+<<<<<<< HEAD
 /* Container du quiz – carte indépendante et centrée */
+=======
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 .quiz-container {
     max-width: 500px;
     margin: 0 auto;
@@ -55,7 +66,10 @@
     box-shadow: 0 18px 36px rgba(18, 30, 22, 0.12);
 }
 
+<<<<<<< HEAD
 /* Step indicator */
+=======
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 .step-indicator {
     font-size: 0.85rem;
     color: var(--text-soft);
@@ -64,7 +78,11 @@
     letter-spacing: 1px;
 }
 
+<<<<<<< HEAD
 /* Question */
+=======
+
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 .quiz-question {
     font-size: 1.4rem;
     font-weight: 600;
@@ -74,7 +92,11 @@
     animation: fadeIn 0.3s ease-in;
 }
 
+<<<<<<< HEAD
 /* Options grid */
+=======
+
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 .options-grid {
     display: flex;
     flex-direction: column;
@@ -108,7 +130,11 @@
     transform: scale(0.98);
 }
 
+<<<<<<< HEAD
 /* Loader */
+=======
+
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 .loader-box {
     display: flex;
     flex-direction: column;
@@ -149,7 +175,11 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
+<<<<<<< HEAD
 /* Bouton refaire quiz */
+=======
+
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 .quiz-page__button {
     display: inline-flex;
     align-items: center;

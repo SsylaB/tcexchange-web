@@ -5,7 +5,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+<<<<<<< HEAD
     padding: 1rem 2rem;
+=======
+    padding: 0.5rem 2rem;
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
     background: rgba(255, 251, 244, 0.92);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
@@ -57,12 +61,54 @@
     box-shadow: 0 8px 18px rgba(243, 179, 76, 0.25);
 }
 
+<<<<<<< HEAD
 .nav-link--quiz.nav-link--active {
     background: linear-gradient(135deg, #f06a63, #f6a29d);
 }
 
 .nav-link--chatbot.nav-link--active {
     background: linear-gradient(135deg, var(--blue-light), #9adff0);
+=======
+.nav-link--catalog:hover {
+    background: #edbfbc;
+    color: var(--green-dark);
+}
+.nav-link--catalog.nav-link--active {
+    background: linear-gradient(135deg, var(--red), var(--orange));
+}
+
+.nav-link--map:hover {
+    background: #fdde9b;
+    color: var(--green-dark);
+}
+
+.nav-link--map.nav-link--active {
+    background: linear-gradient(135deg, var(--orange), var(--yellow));
+}
+
+.nav-link--quiz:hover {
+    background: #fdf093;
+    color: var(--green-dark);
+}
+.nav-link--quiz.nav-link--active {
+    background: linear-gradient(135deg, var(--yellow), #d6d172, var(--green-light));
+}
+
+.nav-link--chatbot:hover {
+    background: #c8ecc5;
+    color: var(--green-dark);
+}
+.nav-link--chatbot.nav-link--active {
+    background: linear-gradient(135deg, var(--green-light), var(--blue-light));
+}
+
+.nav-link--compare:hover {
+    background: #c5e8f1;
+    color: var(--green-dark);
+}
+.nav-link--compare.nav-link--active {
+    background: linear-gradient(135deg, var(--blue-light), #5bc0de);
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
 }
 
 @media (max-width: 900px) {
@@ -82,3 +128,49 @@
         width: 100%;
     }
 }
+<<<<<<< HEAD
+=======
+
+.nav-username {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.nav-logout {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+}
+.nav-user {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.nav-username {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.nav-username:hover {
+    opacity: 1;
+}
+
+.nav-logout {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    z-index: 100;
+}
+>>>>>>> f71d69531026042264f2f0b33938708b39cb0a4c
