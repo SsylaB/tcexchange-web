@@ -1,0 +1,79 @@
+.compare-hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-md);
+}
+
+.compare-hero-badge {
+  display: inline-block;
+  background: var(--surface-blue);
+  color: var(--blue-dark);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.compare-hero-title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  color: var(--green-dark);
+  letter-spacing: -0.02em;
+}
+
+.compare-hero-text {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.6;
+  max-width: 800px;
+}
+.compare-hero {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem; /* On donne de l'espace */
+    margin-bottom: 2rem;
+    overflow: hidden; /* Important pour que le rainbow ne dépasse pas des arrondis */
+    box-shadow: var(--shadow-md);
+}
+
+/* On utilise ta variable existante pour le trait arc-en-ciel en haut */
+.compare-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 8px; /* Épaisseur du trait arc-en-ciel */
+    background: var(--rainbow-gradient);
+}
+
+.compare-hero-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--badge-erasmus-bg);
+    color: var(--badge-erasmus-text);
+    border-radius: 999px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-black);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+.compare-hero-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-black);
+    color: var(--green-dark);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+.compare-hero-text {
+    font-size: var(--font-size-base);
+    color: var(--text-soft);
+    max-width: 800px;
+    margin: 0;
+}

@@ -1,0 +1,130 @@
+/* --- SECTION HEADER (Titre + Boutons Tout cocher) --- */
+.compare-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem; /* Réduit l'espace sous le titre principal */
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.compare-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* --- CONTAINER DES GROUPES --- */
+.compare-criteria-pills-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* RÉDUIT : Espace entre chaque ligne de catégorie (Budget, Langues...) */
+}
+
+/* --- GROUPE INDIVIDUEL --- */
+.compare-criteria-pill-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* RÉDUIT : Espace entre le label (ex: LANGUES) et ses boutons */
+}
+
+/* --- LABELS DES CATÉGORIES (Le texte coloré en haut) --- */
+.compare-criteria-pill-header {
+  font-size: 0.65rem; /* Un peu plus petit pour gagner de la place */
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.2rem; /* Un léger espace au-dessus pour séparer visuellement */
+}
+
+/* --- LISTE DES BOUTONS --- */
+.compare-criteria-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem; /* RÉDUIT : Espace horizontal et vertical entre les boutons blancs */
+}
+
+/* --- STYLE DES BOUTONS (PILLS) --- */
+.compare-criteria-pill {
+  padding: 0.35rem 0.75rem; /* Plus compact à l'intérieur du bouton */
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-size: 0.82rem; /* Taille de police légèrement réduite */
+  font-weight: 600;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.compare-criteria-pill:hover {
+  border-color: var(--text-soft);
+  background: var(--surface-soft);
+}
+
+/* --- ÉTATS ACTIFS --- */
+.compare-criteria-pill--active {
+  color: white;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* --- COULEURS DES HEADERS ET ÉTATS ACTIFS --- */
+.compare-criteria-pill-header--type { color: #7c5cbf; }
+.compare-criteria-pill--active-type { background: #7c5cbf; border-color: #7c5cbf; }
+
+.compare-criteria-pill-header--budget { color: #c07a00; }
+.compare-criteria-pill--active-budget { background: #c07a00; border-color: #c07a00; }
+
+.compare-criteria-pill-header--lang { color: var(--blue-dark); }
+.compare-criteria-pill--active-lang { background: var(--blue-dark); border-color: var(--blue-dark); }
+
+.compare-criteria-pill-header--acad { color: #2266b2; }
+.compare-criteria-pill--active-acad { background: #2266b2; border-color: #2266b2; }
+
+.compare-criteria-pill-header--geo { color: #1a8c6e; }
+.compare-criteria-pill--active-geo { background: #1a8c6e; border-color: #1a8c6e; }
+
+.compare-criteria-pill-header--cadre { color: #3a8a3a; }
+.compare-criteria-pill--active-cadre { background: #3a8a3a; border-color: #3a8a3a; }
+
+.compare-criteria-pill-header--exp { color: var(--red); }
+.compare-criteria-pill--active-exp { background: var(--red); border-color: var(--red); }
+
+/* --- CTA (Bouton Lancer) --- */
+.compare-cta-row {
+  margin-top: 1rem; /* Moins d'espace au-dessus du gros bouton orange */
+}
+
+/* Style pour les boutons de contrôle Tout cocher / Décocher */
+.compare-control-button {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--green-dark);
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: all 0.2s ease;
+  font-family: inherit; /* Pour éviter la police système moche */
+}
+
+.compare-control-button:hover {
+  background: var(--surface-soft);
+  border-color: var(--text-soft);
+}
+
+/* Le petit compteur à côté */
+.compare-counter {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--green-dark);
+  margin-left: 0.5rem;
+  background: var(--surface-soft);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+}
+

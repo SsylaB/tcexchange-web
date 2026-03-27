@@ -1,0 +1,56 @@
+/* --- TEXTAREA (LA ZONE DE SAISIE) --- */
+.compare-textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem; /* On augmente le padding pour plus de confort */
+    font-family: inherit;
+    
+    /* AUGMENTATION POLICE */
+    font-size: 1.1rem; /* Environ 18px pour que ce soit bien lisible */
+    font-weight: 500;
+    color: var(--green-dark);
+    
+    background: white;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+/* Style du texte quand on écrit rien (placeholder) */
+.compare-textarea::placeholder {
+    font-size: 1rem;
+    color: var(--text-soft);
+    opacity: 0.7;
+}
+
+.compare-textarea:focus {
+    border-color: var(--blue-dark);
+    box-shadow: 0 0 0 3px rgba(66, 139, 202, 0.1);
+}
+
+/* --- MESSAGES DU CHAT --- */
+.compare-chat-message-user, 
+.compare-chat-message-assistant {
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    max-width: 85%;
+    
+    /* AUGMENTATION POLICE DES RÉPONSES */
+    font-size: 1.05rem; 
+    line-height: 1.5;
+}
+
+.compare-chat-role {
+    font-size: 0.8rem; /* Un peu plus grand aussi */
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.05em;
+}
+
+/* --- BOUTON ENVOYER --- */
+.compare-chat-actions .compare-primary-button {
+    font-size: 1.1rem; /* On harmonise le bouton avec le texte */
+    padding: 0.8rem 2.5rem;
+}

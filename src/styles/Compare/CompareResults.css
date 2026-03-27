@@ -1,0 +1,103 @@
+/* --- BLOC SCORE (Barres Rainbow Wave) --- */
+.compare-score-wrap {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.compare-score-bar-row {
+    display: grid;
+    grid-template-columns: minmax(180px, 280px) 1fr 65px;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.compare-score-name {
+    font-weight: var(--font-weight-bold);
+    color: var(--green-dark);
+    font-size: var(--font-size-base);
+}
+
+.compare-score-track {
+    height: 16px;
+    border-radius: 999px;
+    background: var(--surface-soft);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border);
+}
+
+.compare-score-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    background: var(--rainbow-gradient) !important;
+    background-size: 200% 100%;
+}
+
+/* L'effet de vagues blanches par-dessus le rainbow */
+.compare-score-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%),
+        linear-gradient(315deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%);
+    background-position: 8px 0, 8px 0, 0 0, 0 0;
+    background-size: 16px 16px;
+    opacity: 0.8;
+}
+
+.compare-score-pct {
+    font-weight: var(--font-weight-black);
+    color: var(--green-dark);
+    text-align: right;
+    font-size: var(--font-size-md);
+}
+
+/* --- LE VERDICT GLOBAL (STYLE EXPERT) --- */
+.compare-verdict-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-left: 6px solid var(--blue-dark);
+    border-radius: 18px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: var(--shadow-sm);
+}
+
+.compare-verdict-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.verdict-icon { font-size: 1.4rem; }
+
+.compare-verdict-title {
+    font-weight: var(--font-weight-black);
+    font-size: var(--font-size-base);
+    color: var(--blue-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.compare-verdict-body {
+    font-size: var(--font-size-lg); 
+    line-height: 1.8;
+    color: var(--green-dark);
+}
+
+.compare-verdict-body strong {
+    color: var(--blue-dark);
+    font-weight: var(--font-weight-extrabold);
+}

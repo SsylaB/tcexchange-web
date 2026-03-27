@@ -1,12 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import "../styles/ComparePage.css";
 
+// --- UNIQUE IMPORT CSS ---
+// Ce fichier importe tous les autres modules (Hero, Selector, Criteria, Results, etc.) via @import
+import "../styles/Compare/ComparePage.css";
+
+// --- TYPES & UTILS ---
 import type { AiResult, ChatMessage, Destination } from "../types/compare";
 import { callOllamaMultiCompare, callOllamaFollowup } from "../utils/ollama";
-import { normalizeExchangeType, getOrderedSummaries } from "../utils/compareUtils";
+import { normalizeExchangeType } from "../utils/compareUtils";
 import { computeTableRows } from "../utils/criteriaMatch";
 import { useFavorites } from "../context/FavoritesContext";
+
+// --- COMPOSANTS ---
 import MultiCompareTable from "../components/MultiCompareTable";
 import DestinationPicker from "../components/DestinationPicker";
 
@@ -23,7 +29,7 @@ type RawDestination = {
 };
 
 const CRITERIA_GROUPS: Record<string, Record<string, string[]>> = {
-  "Type d'échange" : {
+  "Type d'échange": {
     "Erasmus+": ["erasmus"],
     "Bilatéral": ["bilateral"],
     "Double Diplôme": ["dd"],
@@ -32,11 +38,7 @@ const CRITERIA_GROUPS: Record<string, Record<string, string[]>> = {
     "Petit budget (-1000 euros)": ["budget-mid"],
     "Budget élevé": ["budget-high"],
   },
-  Géographie : {
-    "Proche de Lyon": ["close"],
-    "Destination lointaine": ["far"],
-  },
-  Langues : {
+  Langues: {
     Anglais: ["en"],
     Espagnol: ["es"],
     Allemand: ["de"],
@@ -44,8 +46,10 @@ const CRITERIA_GROUPS: Record<string, Record<string, string[]>> = {
     "Langue asiatique": ["asia-lang"],
     "Apprentissage de langue": ["lang-learn"],
   },
-  "Cours et UE" : {
-    "(HOP) : Hertzian Optical Propagation": ["hop"],
+  UE: {
+    "Mathématiques et Signal": ["math-signal"],
+    "Réseaux et Télécoms": ["net-telecom"],
+    "Informatique et Logiciels": ["info-soft"],
   },
   Académique: {
     "Intensité forte": ["intense"],
@@ -59,6 +63,10 @@ const CRITERIA_GROUPS: Record<string, Record<string, string[]>> = {
     "Secteur Tech / IA": ["sector-tech"],
     "Secteur Startup": ["sector-startup"],
     "Secteur Industrie": ["sector-indus"],
+  },
+  Géographie: {
+    "Proche de Lyon": ["close"],
+    "Destination lointaine": ["far"],
   },
   "Cadre de vie": {
     "Climat chaud": ["chaud"],
@@ -79,24 +87,15 @@ const CRITERIA_GROUPS: Record<string, Record<string, string[]>> = {
 function groupSlug(name: string): string {
   const map: Record<string, string> = {
     "Type d'échange": "type",
-    "Budget": "budget",
-    "Géographie": "geo",
-    "Langues": "lang",
-    "Académique": "acad",
+    Budget: "budget",
+    Géographie: "geo",
+    Langues: "lang",
+    Académique: "acad",
     "Cadre de vie": "cadre",
-    "Expérience": "exp",
+    Expérience: "exp",
   };
   return map[name] ?? "exp";
 }
-
-const ANALYSIS_MESSAGES = [
-  "Analyse des destinations sélectionnées…",
-  "Croisement avec les critères prioritaires…",
-  "Évaluation des langues, du type d'échange et du cadre de vie…",
-  "Comparaison des points forts académiques…",
-  "Construction d'un verdict argumenté…",
-  "Finalisation de la synthèse…",
-];
 
 function mapDestination(d: RawDestination): Destination {
   const langs = d.languages ? d.languages.split(",").map((l) => l.trim()) : [];
@@ -127,22 +126,14 @@ function SectionCard({
   return <section className={`compare-card ${className}`.trim()}>{children}</section>;
 }
 
-
 export default function ComparePage() {
   const { favorites: favoriteIds } = useFavorites();
 
   const [destinations, setDestinations] = useState<Destination[]>([]);
-
-  useEffect(() => {
-    fetch("http://localhost:3000/api/destinations")
-      .then((res) => res.json())
-      .then((data: RawDestination[]) => setDestinations(data.map(mapDestination)))
-      .catch(console.error);
-  }, []);
-
-  const [selectedDestinations, setSelectedDestinations] = useState<Array<Destination | null>>(
-    [null, null]
-  );
+  const [selectedDestinations, setSelectedDestinations] = useState<Array<Destination | null>>([
+    null,
+    null,
+  ]);
   const [selectedCriteria, setSelectedCriteria] = useState<Set<string>>(new Set());
   const [aiState, setAiState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [aiResult, setAiResult] = useState<AiResult | null>(null);
@@ -151,10 +142,30 @@ export default function ComparePage() {
   const [followupMessages, setFollowupMessages] = useState<ChatMessage[]>([]);
   const [followupInput, setFollowupInput] = useState("");
   const [followupState, setFollowupState] = useState<"idle" | "loading" | "error">("idle");
-  const [followupError, setFollowupError] = useState("");
 
   const analysisRef = useRef<HTMLElement | null>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/destinations")
+      .then((res) => res.json())
+      .then((data: RawDestination[]) => setDestinations(data.map(mapDestination)))
+      .catch(console.error);
+  }, []);
+
+  const chosenDestinations = useMemo(
+    () => selectedDestinations.filter((dest): dest is Destination => dest !== null),
+    [selectedDestinations]
+  );
+
+  const ANALYSIS_MESSAGES = useMemo(() => {
+    return [
+      "Je compare tes destinations pour te faire une reco vraiment utile…",
+      "Je croise les données avec tes critères prioritaires…",
+      "Je pèse les points forts et les points de vigilance…",
+      "Encore quelques secondes, je finalise le verdict…"
+    ];
+  }, []);
 
   useEffect(() => {
     if (aiState !== "loading") return;
@@ -162,22 +173,13 @@ export default function ComparePage() {
       setLoadingMessageIndex((prev) => (prev + 1) % ANALYSIS_MESSAGES.length);
     }, 1800);
     return () => window.clearInterval(interval);
-  }, [aiState]);
+  }, [aiState, ANALYSIS_MESSAGES]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [followupMessages, followupState]);
 
-  const chosenDestinations = useMemo(
-    () => selectedDestinations.filter((dest): dest is Destination => dest !== null),
-    [selectedDestinations]
-  );
-
-  const uniqueIds = new Set(chosenDestinations.map((d) => d.id));
-  const canCompare =
-    chosenDestinations.length >= 2 &&
-    uniqueIds.size === chosenDestinations.length &&
-    selectedCriteria.size > 0;
+  const canCompare = chosenDestinations.length >= 2 && selectedCriteria.size > 0;
 
   const destinationsByCountry = useMemo(() => {
     const grouped: Record<string, Destination[]> = {};
@@ -185,39 +187,18 @@ export default function ComparePage() {
       if (!grouped[dest.country]) grouped[dest.country] = [];
       grouped[dest.country].push(dest);
     }
-    for (const country of Object.keys(grouped)) {
-      grouped[country].sort((a, b) => a.name.localeCompare(b.name));
-    }
     return Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b));
   }, [destinations]);
 
   const favoriteDestinations = useMemo(
-    () => destinations.filter((dest) => favoriteIds.includes(dest.id)).sort((a, b) => a.name.localeCompare(b.name)),
+    () => destinations.filter((dest) => favoriteIds.includes(dest.id)),
     [favoriteIds, destinations]
-  );
-
-  const orderedSummaries = useMemo(
-    () => (aiResult ? getOrderedSummaries(aiResult, chosenDestinations) : []),
-    [aiResult, chosenDestinations]
   );
 
   function resetAi() {
     setAiState("idle");
     setAiResult(null);
     setAiError("");
-    setLoadingMessageIndex(0);
-  }
-
-  function resetFollowupChat() {
-    setFollowupMessages([]);
-    setFollowupInput("");
-    setFollowupState("idle");
-    setFollowupError("");
-  }
-
-  function reset() {
-    resetAi();
-    resetFollowupChat();
   }
 
   function toggleCriterion(label: string) {
@@ -226,7 +207,7 @@ export default function ComparePage() {
       next.has(label) ? next.delete(label) : next.add(label);
       return next;
     });
-    reset();
+    resetAi();
   }
 
   function selectAllCriteria() {
@@ -235,12 +216,12 @@ export default function ComparePage() {
       for (const label of Object.keys(group)) all.add(label);
     }
     setSelectedCriteria(all);
-    reset();
+    resetAi();
   }
 
   function clearAllCriteria() {
     setSelectedCriteria(new Set());
-    reset();
+    resetAi();
   }
 
   function updateSelectedDestination(index: number, destination: Destination | null) {
@@ -249,190 +230,132 @@ export default function ComparePage() {
       next[index] = destination;
       return next;
     });
-    reset();
+    resetAi();
   }
 
-  function addDestinationSlot() {
-    setSelectedDestinations((prev) => [...prev, null]);
-    reset();
-  }
+async function handleAI() {
+  if (!canCompare) return;
+  setAiState("loading");
+  setAiResult(null);
+  setAiError("");
 
-  function removeDestinationSlot(index: number) {
-    setSelectedDestinations((prev) => {
-      if (prev.length <= 2) return prev;
-      return prev.filter((_, i) => i !== index);
-    });
-    reset();
-  }
+  analysisRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  async function handleAI() {
-    if (!canCompare) return;
-
-    setAiState("loading");
-    setAiResult(null);
-    setAiError("");
-    setLoadingMessageIndex(0);
-    resetFollowupChat();
-
-    window.setTimeout(() => {
-      analysisRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
-
-    const criteriaWithGroups: Array<{ group: string; label: string }> = [];
-    for (const [group, criteria] of Object.entries(CRITERIA_GROUPS)) {
-      for (const label of Object.keys(criteria)) {
-        if (selectedCriteria.has(label)) criteriaWithGroups.push({ group, label });
+  // 1. On prépare les critères (Correction de l'erreur 'criteriaWithGroups')
+  const criteriaList: Array<{ group: string; label: string }> = [];
+  for (const [group, criteria] of Object.entries(CRITERIA_GROUPS)) {
+    for (const label of Object.keys(criteria)) {
+      if (selectedCriteria.has(label)) {
+        criteriaList.push({ group, label });
       }
     }
+  }
 
-    try {
-      const textResult = await callOllamaMultiCompare(chosenDestinations, [...selectedCriteria]);
-      const summaries = Object.fromEntries(textResult.destinationSummaries.map((s) => [s.name, s.analysis]));
-      const tableRows = computeTableRows(chosenDestinations, criteriaWithGroups, summaries);
-      setAiResult({ ...textResult, tableRows });
-      setAiState("done");
-    } catch (e) {
-      setAiState("error");
-      setAiError(e instanceof Error ? e.message : "Erreur de connexion à Ollama");
+  try {
+    const textResult = await callOllamaMultiCompare(chosenDestinations, [...selectedCriteria]);
+    
+    // 2. Vérification de l'erreur de quota (Correction erreur 'error' sur le type)
+    // On force le passage en 'any' juste pour le check de l'erreur API
+    const rawData = textResult as any;
+    if (rawData.error && (rawData.error.code === 429 || rawData.error.status === "RESOURCE_EXHAUSTED")) {
+      throw new Error("QUOTA_EXCEEDED");
+    }
+
+    // 3. Construction des lignes du tableau
+    const tableRows = computeTableRows(chosenDestinations, criteriaList, textResult.rawCriteria ?? []);
+
+    setAiResult({ ...textResult, tableRows });
+    setAiState("done");
+  } catch (e: any) {
+    setAiState("error");
+    
+    // Message propre pour l'utilisateur
+    if (e.message === "QUOTA_EXCEEDED" || e.message?.includes("429")) {
+      setAiError("L'assistant IA a atteint sa limite quotidienne de réflexion ! 😴 Il sera de nouveau disponible demain matin.");
+    } else {
+      setAiError(e instanceof Error ? e.message : "Erreur de connexion avec l'IA.");
     }
   }
+}
 
   async function handleFollowupAsk() {
     const question = followupInput.trim();
-    if (!question || !aiResult || chosenDestinations.length < 2) return;
-
+    if (!question || !aiResult) return;
     const nextMessages = [...followupMessages, { role: "user" as const, content: question }];
     setFollowupMessages(nextMessages);
     setFollowupInput("");
     setFollowupState("loading");
-    setFollowupError("");
-
     try {
-      const answer = await callOllamaFollowup(
-        chosenDestinations,
-        [...selectedCriteria],
-        aiResult,
-        nextMessages,
-        question
-      );
-      setFollowupMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: answer || "Je n'ai pas pu formuler de réponse utile." },
-      ]);
+      const answer = await callOllamaFollowup(chosenDestinations, [...selectedCriteria], aiResult, nextMessages, question);
+      setFollowupMessages((prev) => [...prev, { role: "assistant", content: answer || "Désolé, pas de réponse." }]);
       setFollowupState("idle");
     } catch (e) {
       setFollowupState("error");
-      setFollowupError(e instanceof Error ? e.message : "Erreur de connexion à Ollama");
     }
   }
 
   return (
     <main className="compare-page">
-      <section className="compare-hero">
-        <div className="compare-hero-badge">TComparateur </div>
-        <h1 className="compare-hero-title">Comparateur de destinations</h1>
-        <p className="compare-hero-text">
-          Sélectionnez plusieurs destinations, choisissez vos critères prioritaires, obtenez une
-          analyse détaillée, puis posez quelques questions de suivi sur cette comparaison.
-        </p>
-      </section>
+      {/* SECTION HERO : On ajoute la classe pour le dégradé en haut */}
+        <section className="compare-hero card-base--rainbow">
+          <div className="compare-hero-badge">TComparateur</div>
+          <h1 className="compare-hero-title">
+            Comparateur de destinations pour votre échange TC !
+          </h1>
+          <p className="compare-hero-text">
+            Sélectionnez plusieurs destinations, choisissez vos critères prioritaires et obtenez une analyse détaillée.
+          </p>
+        </section>
 
+      {/* SECTION 1: DESTINATIONS */}
       <SectionCard>
-        <div className="compare-section-header">
-          <div>
-            <h2 className="compare-section-title">1. Choisissez vos destinations</h2>
-            <p className="compare-section-text">
-              Favoris en haut, puis classement par pays et universités.
-            </p>
-          </div>
-        </div>
-
+        <h2 className="compare-section-title">1. Choisissez vos destinations</h2>
         <div className="compare-selector-list">
-          {selectedDestinations.map((dest, index) => {
-            const excludedIds = selectedDestinations
-              .filter((_, i) => i !== index)
-              .filter((item): item is Destination => item !== null)
-              .map((item) => item.id);
-
-            return (
-              <div key={index} className="compare-selector-block">
-                <div className="compare-selector-top-row">
-                  <label
-                    className={`compare-selector-label ${
-                      index === 0
-                        ? "compare-selector-label--red"
-                        : index === 1
-                        ? "compare-selector-label--blue"
-                        : "compare-selector-label--green"
-                    }`}
-                  >
-                    Destination {index + 1}
-                  </label>
-                  {dest && <span className="compare-selector-badge">{dest.type}</span>}
-                  {selectedDestinations.length > 2 && (
-                    <button
-                      type="button"
-                      onClick={() => removeDestinationSlot(index)}
-                      className="compare-remove-button"
-                    >
-                      Retirer
-                    </button>
-                  )}
-                </div>
-
-                <DestinationPicker
-                  label=""
-                  value={dest}
-                  onSelect={(selectedDest) => updateSelectedDestination(index, selectedDest)}
-                  excludedIds={excludedIds}
-                  destinationsByCountry={destinationsByCountry}
-                  favorites={favoriteDestinations}
-                  accentColor="var(--green-dark)"
-                />
-
-              </div>
-            );
-          })}
+          {selectedDestinations.map((dest, index) => (
+            <div key={index} className="compare-selector-block">
+              {/* MODIFICATION : Ajout de la classe dynamique 'is-selected' pour activer l'effet Rainbow en CSS */}
+              <label className={`compare-selector-label ${dest ? 'is-selected' : ''}`}>
+                Destination {index + 1}
+              </label>
+              <DestinationPicker
+                label=""
+                value={dest}
+                onSelect={(d) => updateSelectedDestination(index, d)}
+                excludedIds={selectedDestinations.filter((_, i) => i !== index).filter((d): d is Destination => d !== null).map(d => d.id)}
+                destinationsByCountry={destinationsByCountry}
+                favorites={favoriteDestinations}
+                accentColor="var(--green-dark)"
+              />
+            </div>
+          ))}
         </div>
-
         <div className="compare-add-row">
-          <button type="button" onClick={addDestinationSlot} className="compare-secondary-button">
+          <button type="button" onClick={() => setSelectedDestinations([...selectedDestinations, null])} className="compare-secondary-button">
             + Ajouter une destination
           </button>
         </div>
       </SectionCard>
 
+      {/* SECTION 2: CRITÈRES */}
       <SectionCard>
         <div className="compare-section-header">
-          <div>
-            <h2 className="compare-section-title">2. Sélectionnez vos critères cruciaux</h2>
-            <p className="compare-section-text">Cochez ce qui compte vraiment pour votre choix.</p>
-          </div>
+          <h2 className="compare-section-title">2. Sélectionnez vos critères</h2>
           <div className="compare-top-actions">
-            <button type="button" onClick={selectAllCriteria} className="compare-text-button">
-            </button>
-            <button type="button" onClick={clearAllCriteria} className="compare-text-button">
-              Tout décocher
-            </button>
-            <span className="compare-counter">
-              {selectedCriteria.size} critère{selectedCriteria.size > 1 ? "s" : ""}
-            </span>
+            <button type="button" onClick={selectAllCriteria} className="compare-control-button">Tout cocher</button>
+            <button type="button" onClick={clearAllCriteria} className="compare-control-button">Tout décocher</button>
+            <span className="compare-counter">{selectedCriteria.size} critères</span>
           </div>
         </div>
-
         <div className="compare-criteria-pills-container">
           {Object.entries(CRITERIA_GROUPS).map(([group, criteria]) => (
             <div key={group} className="compare-criteria-pill-group">
-              <div className={`compare-criteria-pill-header compare-criteria-pill-header--${groupSlug(group)}`}>
-                {group}
-              </div>
+              <div className={`compare-criteria-pill-header compare-criteria-pill-header--${groupSlug(group)}`}>{group}</div>
               <div className="compare-criteria-pill-list">
                 {Object.keys(criteria).map((label) => (
                   <button
                     key={label}
-                    type="button"
                     onClick={() => toggleCriterion(label)}
-                    className={`compare-criteria-pill${selectedCriteria.has(label) ? ` compare-criteria-pill--active compare-criteria-pill--active-${groupSlug(group)}` : ""}`}
+                    className={`compare-criteria-pill ${selectedCriteria.has(label) ? `compare-criteria-pill--active compare-criteria-pill--active-${groupSlug(group)}` : ""}`}
                   >
                     {label}
                   </button>
@@ -441,28 +364,14 @@ export default function ComparePage() {
             </div>
           ))}
         </div>
-
         <div className="compare-cta-row">
-          <button
-            type="button"
-            onClick={handleAI}
-            disabled={!canCompare || aiState === "loading"}
-            className="compare-primary-button"
-          >
+          <button onClick={handleAI} disabled={!canCompare || aiState === "loading"} className="compare-primary-button">
             {aiState === "loading" ? "Analyse en cours…" : "Lancer le comparateur"}
           </button>
-          {!canCompare && (
-            <span className="compare-hint">
-              {chosenDestinations.length < 2
-                ? "Sélectionnez au moins deux destinations différentes"
-                : uniqueIds.size !== chosenDestinations.length
-                ? "Choisissez des destinations différentes"
-                : "Cochez au moins un critère"}
-            </span>
-          )}
         </div>
       </SectionCard>
 
+      {/* SECTION 3: ANALYSE IA ET TABLEAU */}
       {(aiState === "loading" || aiState === "done" || aiState === "error") && (
         <SectionCard className="compare-analysis-card">
           <section ref={analysisRef}>
@@ -472,21 +381,16 @@ export default function ComparePage() {
               <div className="compare-loading-box">
                 <div className="compare-loading-dot" />
                 <div>
-                  <div className="compare-loading-title">Ollama analyse la comparaison…</div>
-                  <div className="compare-loading-text">
-                    {ANALYSIS_MESSAGES[loadingMessageIndex]}
-                  </div>
+                  <div className="compare-loading-title">Analyse intelligente en cours…</div>
+                  <div className="compare-loading-text">{ANALYSIS_MESSAGES[loadingMessageIndex]}</div>
                 </div>
               </div>
             )}
 
             {aiState === "error" && (
               <div className="compare-error-box">
-                <strong>Erreur de connexion à Gemini</strong>
-                <p style={{ margin: "0.65rem 0 0" }}>{aiError}</p>
-                <p style={{ margin: "0.65rem 0 0", color: "var(--text-soft)" }}>
-                 Vérifiez que votre clé API Gemini est bien définie dans <code>.env.local</code>.
-                </p>
+                <strong>Erreur</strong>
+                <p>{aiError}</p>
               </div>
             )}
 
@@ -496,35 +400,23 @@ export default function ComparePage() {
                   <div className="compare-verdict-title">Classement proposé</div>
                   <div className="compare-ranking-list">
                     {aiResult.ranking.map((name, index) => (
-                      <span key={name} className="compare-rank-chip">
-                        #{index + 1} {name}
-                      </span>
+                      <div key={name} className={`compare-rank-card rank-card--${index}`}>
+                        <div className="rank-number">#{index + 1}</div>
+                        <div className="rank-univ-name">{name}</div>
+                      </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="compare-analysis-grid">
-                  {orderedSummaries.map((summary, index) => (
-                    <div key={summary.name} className="compare-analysis-col">
-                      <div
-                        className={`compare-analysis-header ${
-                          index === 0
-                            ? "compare-analysis-header--red"
-                            : index === 1
-                            ? "compare-analysis-header--blue"
-                            : "compare-analysis-header--green"
-                        }`}
-                      >
-                        {summary.name}
-                      </div>
-                      <div className="compare-analysis-body">{summary.analysis || "—"}</div>
-                    </div>
-                  ))}
-                </div>
-
+                {/* BLOC VERDICT GLOBAL RAFFINÉ */}
                 <div className="compare-verdict-box">
-                  <div className="compare-verdict-title">Verdict global</div>
-                  <div className="compare-verdict-body">{aiResult.verdict || "—"}</div>
+                  <div className="compare-verdict-header">
+                    <span className="verdict-icon">✨</span>
+                    <h3 className="compare-verdict-title">L'avis de ton assistant TC</h3>
+                  </div>
+                  <div className="compare-verdict-body">
+                    {aiResult.verdict || "Analyse indisponible pour le moment."}
+                  </div>
                 </div>
 
                 <div className="compare-divider">Détail par critère</div>
@@ -539,71 +431,46 @@ export default function ComparePage() {
         </SectionCard>
       )}
 
+      {/* SECTION 4: CHAT FOLLOWUP */}
       {aiState === "done" && aiResult && (
         <SectionCard>
-          <h2 className="compare-section-title">4. Questions rapides sur cette comparaison</h2>
-          <p className="compare-section-text">
-            Petit suivi contextuel sur la comparaison en cours, sans remplacer la page chatbot
-            principale.
-          </p>
-
-          <div className="compare-chat-box">
-            {followupMessages.length === 0 && (
-              <div className="compare-chat-hint">
-                Exemples : "Laquelle semble la plus adaptée si je privilégie la langue ?" ou
-                "Quelle destination paraît la plus équilibrée ?"
-              </div>
-            )}
-
-            {followupMessages.map((message, index) => (
-              <div
-                key={index}
-                className={
-                  message.role === "user"
-                    ? "compare-chat-message-user"
-                    : "compare-chat-message-assistant"
-                }
-              >
-                <div className="compare-chat-role">
-                  {message.role === "user" ? "Vous" : "Assistant comparaison"}
+          <h2 className="compare-section-title">4. Questions sur cette comparaison</h2>
+          
+          {(followupMessages.length > 0 || followupState === "loading") && (
+            <div className="compare-chat-box">
+              {followupMessages.map((msg, index) => (
+                <div key={index} className={msg.role === "user" ? "compare-chat-message-user" : "compare-chat-message-assistant"}>
+                  <div className="compare-chat-role">{msg.role === "user" ? "Vous" : "Assistant"}</div>
+                  <div>{msg.content}</div>
                 </div>
-                <div>{message.content}</div>
-              </div>
-            ))}
-
-            {followupState === "loading" && (
-              <div className="compare-chat-message-assistant">
-                <div className="compare-chat-role">Assistant comparaison</div>
-                <div>Je réfléchis à partir de la comparaison actuelle…</div>
-              </div>
-            )}
-
-            <div ref={chatEndRef} />
-          </div>
+              ))}
+              {followupState === "loading" && (
+                <div className="compare-chat-message-assistant">
+                  <div className="compare-chat-role">Assistant</div>
+                  <div>Je réfléchis...</div>
+                </div>
+              )}
+              <div ref={chatEndRef} />
+            </div>
+          )}
 
           <div className="compare-chat-composer">
             <textarea
               value={followupInput}
               onChange={(e) => setFollowupInput(e.target.value)}
-              placeholder="Posez une question complémentaire sur cette comparaison…"
+              placeholder="Une question sur ces résultats ?"
               className="compare-textarea"
               rows={3}
             />
             <div className="compare-chat-actions">
-              <button
-                type="button"
-                onClick={handleFollowupAsk}
-                disabled={!followupInput.trim() || followupState === "loading"}
+              <button 
+                onClick={handleFollowupAsk} 
+                disabled={!followupInput.trim() || followupState === "loading"} 
                 className="compare-primary-button"
               >
                 Envoyer
               </button>
             </div>
-            {followupState === "error" && (
-              <div className="compare-error-inline">
-                {followupError || "Erreur lors de la question complémentaire."}
-              </div>
-            )}
           </div>
         </SectionCard>
       )}
