@@ -48,7 +48,7 @@ function MapPage() {
     const [selectedCoords, setSelectedCoords] = useState<LatLngTuple | null>(null);
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/destinations")
+        fetch("/api/destinations")
             .then((res) => {
                 if (!res.ok) throw new Error("Erreur réseau");
                 return res.json();

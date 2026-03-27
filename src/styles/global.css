@@ -19,6 +19,11 @@
     --blue-light: #5bc0de;
     --blue-dark: #428bca;
 
+    --dark: #0f172a;
+    --glass: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --hero-img-top: 100px;
+
     /* Shadows & Radius */
     --shadow-sm: 0 6px 18px rgba(18, 30, 22, 0.06);
     --shadow-md: 0 12px 30px rgba(18, 30, 22, 0.08);
