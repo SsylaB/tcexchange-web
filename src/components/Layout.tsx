@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import "../styles/Layout.css";
 import Header from "./Header";
 import ScrollToTop from "./ScrollToTop";
+import Chatbot from "./Chatbot";
 
 function Layout() {
     return (
@@ -11,6 +12,7 @@ function Layout() {
                 <Outlet /> {/* ← chaque page s'affiche ici */}
             </div>
             <ScrollToTop />
+            <Chatbot />
         </>
     );
 }

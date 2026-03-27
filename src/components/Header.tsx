@@ -35,11 +35,6 @@ function Header() {
                              `nav-link nav-link--quiz${isActive ? " nav-link--active" : ""}`}>
                     Quiz
                 </NavLink>
-                <NavLink to="/chatbot"
-                         className={({ isActive }) =>
-                             `nav-link nav-link--chatbot${isActive ? " nav-link--active" : ""}`}>
-                    Chatbot
-                </NavLink>
                 <NavLink to="/compare"
                          className={({ isActive }) =>
                              `nav-link nav-link--compare${isActive ? " nav-link--active" : ""}`}>

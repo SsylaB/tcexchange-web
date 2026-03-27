@@ -48,13 +48,16 @@ export default function Quiz() {
     const answersArray = Object.values(finalAnswers);
 
     try {
-      const response = await fetch('http://localhost:3000/api/quiz', {
+      const response = await fetch('/api/quiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answers: answersArray })
       });
 
-      if (!response.ok) throw new Error(`Erreur serveur: ${response.status}`);
+      if (!response.ok) {
+        setErrorMsg(`Erreur serveur: ${response.status}`);
+        return;
+      }
 
       const data = await response.json();
       

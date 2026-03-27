@@ -1,7 +1,7 @@
 .scroll-to-top {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
+    bottom: clamp(4rem, 8vh, 6rem);
+    right: 50%;
     width: 46px;
     height: 46px;
     border-radius: 50%;

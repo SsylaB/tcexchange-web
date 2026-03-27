@@ -16,7 +16,7 @@ function CatalogPage() {
 
     // Fetch destinations from backend on component mount
     useEffect(() => {
-        fetch("http://localhost:3000/api/destinations")
+        fetch("/api/destinations")
             .then(res => {
                 if (!res.ok) throw new Error("Failed to fetch destinations");
                 return res.json();
