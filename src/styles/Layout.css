@@ -1,5 +1,109 @@
+/* ── Wrapper Global (pour coller le footer en bas) ── */
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Contenu Principal ── */
 .layout__content {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1rem 1.5rem 3rem;
+  flex: 1; 
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+  width: 100%;
+}
+
+/* ── Footer ── */
+.layout__footer {
+  width: 100%;
+  background: var(--green-dark);
+  color: #ffffff;
+  padding: 1.5rem 0; /* Padding équilibré */
+  margin-top: 4rem;
+  position: relative; /* Pour le logo en absolute */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+/* ── Logo à gauche ── */
+.footer-logo {
+  position: absolute;
+  left: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.footer-logo-img {
+  height: 45px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1); /* Force le blanc */
+}
+
+/* ── Texte Central ── */
+.footer-project {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
+  margin: 0;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+
+/* ── La ligne des crédits + Date (C'est ici qu'on règle le décalage) ── */
+.footer-info {
+  display: flex;
+  align-items: center; /* Aligne verticalement les noms et la date sur la même ligne */
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-credits {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.footer-date {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.2); /* Petite barre verticale */
+  display: flex;
+  align-items: center;
+  height: 14px; /* Force une hauteur pour l'alignement */
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .footer-logo {
+    position: static;
+    transform: none;
+    margin-bottom: 1rem;
+  }
+  
+  .footer-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-date {
+    border-left: none;
+    padding-left: 0;
+  }
 }
