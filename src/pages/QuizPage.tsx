@@ -60,15 +60,15 @@ export default function Quiz() {
       }
 
       const data = await response.json();
-      
-      // PARSING DU JSON envoyé par Rust (raw_text contient le JSON de Groq)
-      try {
-        const parsed = JSON.parse(data.raw_text);
-        setRecommendations(parsed.recommendations);
-      } catch (parseError) {
-        console.error("Erreur de lecture du JSON IA:", parseError);
-        setErrorMsg("L'IA a renvoyé un format illisible.");
+
+      // data is { recommendations: Recommendation[] }
+      if (!data || !Array.isArray(data.recommendations)) {
+        console.error("Réponse quiz invalide:", data);
+        setErrorMsg("Réponse inattendue du serveur.");
+        return;
       }
+
+      setRecommendations(data.recommendations);
       
     } catch (error) {
       console.error("Erreur backend:", error);
