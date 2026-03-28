@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"require.resolve\\(''leaflet''\\)\")",
+      "Bash(grep -r \"root\\\\|#root\" c:/Users/sfara/Documents/GitHub/tcexchange-web/index.html c:/Users/sfara/Documents/GitHub/tcexchange-web/src --include=*.tsx --include=*.ts)",
+      "Bash(curl -s http://localhost:3000/api/destinations)"
+    ]
+  }
+}
