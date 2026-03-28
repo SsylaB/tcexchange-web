@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 // --- UNIQUE IMPORT CSS ---
-// Ce fichier importe tous les autres modules (Hero, Selector, Criteria, Results, etc.) via @import
 import "../styles/Compare/ComparePage.css";
 
 // --- TYPES & UTILS ---
@@ -147,6 +146,7 @@ export default function ComparePage() {
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    // Appel vers ton API Rust
     fetch("http://localhost:3000/api/destinations")
       .then((res) => res.json())
       .then((data: RawDestination[]) => setDestinations(data.map(mapDestination)))
@@ -233,50 +233,43 @@ export default function ComparePage() {
     resetAi();
   }
 
-async function handleAI() {
-  if (!canCompare) return;
-  setAiState("loading");
-  setAiResult(null);
-  setAiError("");
+  async function handleAI() {
+    if (!canCompare) return;
+    setAiState("loading");
+    setAiResult(null);
+    setAiError("");
 
-  analysisRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    analysisRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  // 1. On prépare les critères (Correction de l'erreur 'criteriaWithGroups')
-  const criteriaList: Array<{ group: string; label: string }> = [];
-  for (const [group, criteria] of Object.entries(CRITERIA_GROUPS)) {
-    for (const label of Object.keys(criteria)) {
-      if (selectedCriteria.has(label)) {
-        criteriaList.push({ group, label });
+    const criteriaList: Array<{ group: string; label: string }> = [];
+    for (const [group, criteria] of Object.entries(CRITERIA_GROUPS)) {
+      for (const label of Object.keys(criteria)) {
+        if (selectedCriteria.has(label)) {
+          criteriaList.push({ group, label });
+        }
+      }
+    }
+
+    try {
+      // ✅ APPEL VIA LE PONT VERS LE BACKEND RUST
+      const textResult = await callOllamaMultiCompare(chosenDestinations, Array.from(selectedCriteria));
+      
+      const rawSummaries = textResult.rawCriteria || textResult.destinationSummaries || [];
+      
+      // ✅ CONSTRUCTION DES LIGNES DU TABLEAU VIA criteriaMatch.ts
+      const tableRows = computeTableRows(chosenDestinations, criteriaList, rawSummaries);
+
+      setAiResult({ ...textResult, tableRows });
+      setAiState("done");
+    } catch (e: any) {
+      setAiState("error");
+      if (e.message === "QUOTA_EXCEEDED" || e.message?.includes("429")) {
+        setAiError("L'assistant IA a atteint sa limite quotidienne de réflexion ! 😴 Il sera de nouveau disponible demain matin.");
+      } else {
+        setAiError(e instanceof Error ? e.message : "Erreur de connexion avec l'IA.");
       }
     }
   }
-
-  try {
-    const textResult = await callOllamaMultiCompare(chosenDestinations, [...selectedCriteria]);
-    
-    // 2. Vérification de l'erreur de quota (Correction erreur 'error' sur le type)
-    // On force le passage en 'any' juste pour le check de l'erreur API
-    const rawData = textResult as any;
-    if (rawData.error && (rawData.error.code === 429 || rawData.error.status === "RESOURCE_EXHAUSTED")) {
-      throw new Error("QUOTA_EXCEEDED");
-    }
-
-    // 3. Construction des lignes du tableau
-    const tableRows = computeTableRows(chosenDestinations, criteriaList, textResult.rawCriteria ?? []);
-
-    setAiResult({ ...textResult, tableRows });
-    setAiState("done");
-  } catch (e: any) {
-    setAiState("error");
-    
-    // Message propre pour l'utilisateur
-    if (e.message === "QUOTA_EXCEEDED" || e.message?.includes("429")) {
-      setAiError("L'assistant IA a atteint sa limite quotidienne de réflexion ! 😴 Il sera de nouveau disponible demain matin.");
-    } else {
-      setAiError(e instanceof Error ? e.message : "Erreur de connexion avec l'IA.");
-    }
-  }
-}
 
   async function handleFollowupAsk() {
     const question = followupInput.trim();
@@ -285,8 +278,10 @@ async function handleAI() {
     setFollowupMessages(nextMessages);
     setFollowupInput("");
     setFollowupState("loading");
+
     try {
-      const answer = await callOllamaFollowup(chosenDestinations, [...selectedCriteria], aiResult, nextMessages, question);
+      // ✅ APPEL CHAT VIA LE PONT VERS LE BACKEND RUST
+      const answer = await callOllamaFollowup(chosenDestinations, Array.from(selectedCriteria), aiResult, nextMessages, question);
       setFollowupMessages((prev) => [...prev, { role: "assistant", content: answer || "Désolé, pas de réponse." }]);
       setFollowupState("idle");
     } catch (e) {
@@ -296,24 +291,21 @@ async function handleAI() {
 
   return (
     <main className="compare-page">
-      {/* SECTION HERO : On ajoute la classe pour le dégradé en haut */}
-        <section className="compare-hero card-base--rainbow">
-          <div className="compare-hero-badge">TComparateur</div>
-          <h1 className="compare-hero-title">
-            Comparateur de destinations pour votre échange TC !
-          </h1>
-          <p className="compare-hero-text">
-            Sélectionnez plusieurs destinations, choisissez vos critères prioritaires et obtenez une analyse détaillée.
-          </p>
-        </section>
+      <section className="compare-hero card-base--rainbow">
+        <div className="compare-hero-badge">TComparateur</div>
+        <h1 className="compare-hero-title">
+          Comparateur de destinations pour votre échange TC !
+        </h1>
+        <p className="compare-hero-text">
+          Sélectionnez plusieurs destinations, choisissez vos critères prioritaires et obtenez une analyse détaillée.
+        </p>
+      </section>
 
-      {/* SECTION 1: DESTINATIONS */}
       <SectionCard>
         <h2 className="compare-section-title">1. Choisissez vos destinations</h2>
         <div className="compare-selector-list">
           {selectedDestinations.map((dest, index) => (
             <div key={index} className="compare-selector-block">
-              {/* MODIFICATION : Ajout de la classe dynamique 'is-selected' pour activer l'effet Rainbow en CSS */}
               <label className={`compare-selector-label ${dest ? 'is-selected' : ''}`}>
                 Destination {index + 1}
               </label>
@@ -336,7 +328,6 @@ async function handleAI() {
         </div>
       </SectionCard>
 
-      {/* SECTION 2: CRITÈRES */}
       <SectionCard>
         <div className="compare-section-header">
           <h2 className="compare-section-title">2. Sélectionnez vos critères</h2>
@@ -371,7 +362,6 @@ async function handleAI() {
         </div>
       </SectionCard>
 
-      {/* SECTION 3: ANALYSE IA ET TABLEAU */}
       {(aiState === "loading" || aiState === "done" || aiState === "error") && (
         <SectionCard className="compare-analysis-card">
           <section ref={analysisRef}>
@@ -408,7 +398,6 @@ async function handleAI() {
                   </div>
                 </div>
 
-                {/* BLOC VERDICT GLOBAL RAFFINÉ */}
                 <div className="compare-verdict-box">
                   <div className="compare-verdict-header">
                     <span className="verdict-icon">✨</span>
@@ -431,7 +420,6 @@ async function handleAI() {
         </SectionCard>
       )}
 
-      {/* SECTION 4: CHAT FOLLOWUP */}
       {aiState === "done" && aiResult && (
         <SectionCard>
           <h2 className="compare-section-title">4. Questions sur cette comparaison</h2>
