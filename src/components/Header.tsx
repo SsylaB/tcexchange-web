@@ -16,36 +16,56 @@ function Header() {
         <header className="header">
             <div className="header__logo">
                 <NavLink to="/">
-                    <img src="/logo_full.png" alt="TC'exchange"/>
+                    <img src="/logo_full.png" alt="TC'exchange" />
                 </NavLink>
             </div>
             <nav className="header__nav">
-                <NavLink to="/catalog" end
-                         className={({ isActive }) =>
-                             `nav-link nav-link--catalog${isActive ? " nav-link--active" : ""}`}>
+                <NavLink
+                    to="/catalog"
+                    end
+                    className={({ isActive }) =>
+                        `nav-link nav-link--catalog${isActive ? " nav-link--active" : ""}`
+                    }
+                >
                     Catalogue
                 </NavLink>
-                <NavLink to="/map"
-                         className={({ isActive }) =>
-                             `nav-link nav-link--map${isActive ? " nav-link--active" : ""}`}>
+                <NavLink
+                    to="/map"
+                    className={({ isActive }) =>
+                        `nav-link nav-link--map${isActive ? " nav-link--active" : ""}`
+                    }
+                >
                     Carte
                 </NavLink>
-                <NavLink to="/quiz"
-                         className={({ isActive }) =>
-                             `nav-link nav-link--quiz${isActive ? " nav-link--active" : ""}`}>
+                <NavLink
+                    to="/quiz"
+                    className={({ isActive }) =>
+                        `nav-link nav-link--quiz${isActive ? " nav-link--active" : ""}`
+                    }
+                >
                     Quiz
                 </NavLink>
-                <NavLink to="/compare"
-                         className={({ isActive }) =>
-                             `nav-link nav-link--compare${isActive ? " nav-link--active" : ""}`}>
+                <NavLink
+                    to="/compare"
+                    className={({ isActive }) =>
+                        `nav-link nav-link--compare${isActive ? " nav-link--active" : ""}`
+                    }
+                >
                     Comparer
                 </NavLink>
                 <div className="nav-user">
-                    <span className="nav-username" onClick={() => setMenuOpen(o => !o)}>
+                    <span
+                        className="nav-username"
+                        onClick={() => setMenuOpen((o) => !o)}
+                    >
                         👤 {username}
                     </span>
                     {menuOpen && (
-                        <button className="nav-logout" onClick={handleLogout} onMouseLeave={() => setMenuOpen(false)}>
+                        <button
+                            className="nav-logout"
+                            onClick={handleLogout}
+                            onMouseLeave={() => setMenuOpen(false)}
+                        >
                             Déconnexion
                         </button>
                     )}

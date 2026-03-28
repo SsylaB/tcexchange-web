@@ -8,47 +8,51 @@
 
 /* --- LAYOUT GLOBAL --- */
 .compare-page {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 1.25rem 1.25rem 2rem;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 1.25rem 1.25rem 2rem;
 }
 
 .compare-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: 1.25rem;
-  margin-bottom: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
 }
 
 .compare-section-title {
-  margin: 0 0 1rem 0;
-  color: var(--green-dark);
-  font-size: 1.25rem;
-  font-weight: 800;
+    margin: 0 0 1rem 0;
+    color: var(--green-dark);
+    font-size: 1.25rem;
+    font-weight: 800;
 }
 
 .compare-divider {
-  margin: 2rem 0 1rem;
-  font-weight: 900;
-  color: var(--green-dark);
-  font-size: 1.1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 2px solid var(--surface-soft);
-  padding-bottom: 0.5rem;
+    margin: 2rem 0 1rem;
+    font-weight: 900;
+    color: var(--green-dark);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--surface-soft);
+    padding-bottom: 0.5rem;
 }
 
 /* --- RESPONSIVE --- */
 @media (max-width: 900px) {
-  .compare-score-bar-row { 
-    grid-template-columns: 1fr; 
-    gap: 0.25rem;
-  }
+    .compare-score-bar-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
 }
 
 @media (max-width: 768px) {
-  .compare-page { padding: 1rem 0.85rem 2rem; }
-  .compare-selector-list { grid-template-columns: 1fr; }
+    .compare-page {
+        padding: 1rem 0.85rem 2rem;
+    }
+    .compare-selector-list {
+        grid-template-columns: 1fr;
+    }
 }

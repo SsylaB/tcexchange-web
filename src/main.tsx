@@ -9,5 +9,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <FavoritesProvider>
             <App />
         </FavoritesProvider>
-    </React.StrictMode>
+    </React.StrictMode>,
 );

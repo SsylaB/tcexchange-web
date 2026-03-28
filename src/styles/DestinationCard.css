@@ -10,7 +10,9 @@
     justify-content: space-between;
     gap: 1.2rem;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .destination-card:hover {
@@ -110,4 +112,31 @@ button.destination-card__link {
     border: none;
     font-size: 1rem;
     font-family: inherit;
+}
+
+.destination-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.destination-card__favorite {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--text-soft, #94a3b8);
+    line-height: 1;
+    padding: 0.1rem 0.3rem;
+    border-radius: 6px;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.destination-card__favorite:hover {
+    transform: scale(1.2);
+}
+
+.destination-card__favorite--active {
+    color: #f59e0b;
 }

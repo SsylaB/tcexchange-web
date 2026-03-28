@@ -8,7 +8,7 @@ function Layout() {
     return (
         <div className="layout-wrapper">
             <Header />
-            
+
             <main className="layout__content">
                 <Outlet /> {/* ← chaque page s'affiche ici */}
             </main>
@@ -16,14 +16,20 @@ function Layout() {
             <footer className="layout__footer">
                 <div className="footer-container">
                     <div className="footer-logo">
-                        <img src="/logo-insa.png" alt="Logo INSA" className="footer-logo-img" />
+                        <img
+                            src="/logo-insa.png"
+                            alt="Logo INSA"
+                            className="footer-logo-img"
+                        />
                     </div>
-                    
+
                     <p className="footer-project">Projet WEB — INSA Lyon 3TC</p>
-                    
+
                     <div className="footer-info">
                         <p className="footer-credits">
-                            Réalisé par <b>Abderrazik Aida</b> - <b>Boubaker Lilia</b> - <b>Boulifa Khadija</b> - <b>Chkoundali Haifa</b> - <b>Sfar Anas</b>
+                            Réalisé par <b>Abderrazik Aida</b> -{" "}
+                            <b>Boubaker Lilia</b> - <b>Boulifa Khadija</b> -{" "}
+                            <b>Chkoundali Haifa</b> - <b>Sfar Anas</b>
                         </p>
                         <span className="footer-date">© 2026</span>
                     </div>

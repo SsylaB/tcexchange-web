@@ -10,16 +10,23 @@
     --border: #e2e8f0;
     --text-main: #1e293b;
     --text-muted: #64748b;
-    
+
     --font-weight-bold: 700;
     --font-weight-extrabold: 800;
     --font-weight-black: 900;
-    
+
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    
-    --rainbow-gradient: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77, #4D96FF, #9B59B6);
+
+    --rainbow-gradient: linear-gradient(
+        90deg,
+        #ff6b6b,
+        #ffd93d,
+        #6bcb77,
+        #4d96ff,
+        #9b59b6
+    );
 }
 
 /* --- LAYOUT --- */
@@ -65,7 +72,9 @@
 .card-base--rainbow::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 8px;
     background: var(--rainbow-gradient);
 }
@@ -150,15 +159,27 @@
     border-bottom: 2px solid var(--surface-soft);
 }
 
-.compare-criteria-pill-header--type { color: #FF6B6B; border-color: #ffe5e5; }
-.compare-criteria-pill-header--budget { color: #FFD93D; border-color: #fff9db; }
-.compare-criteria-pill-header--lang { color: #4D96FF; border-color: #e6f0ff; }
-.compare-criteria-pill-header--acad { color: #9B59B6; border-color: #f3e8f7; }
+.compare-criteria-pill-header--type {
+    color: #ff6b6b;
+    border-color: #ffe5e5;
+}
+.compare-criteria-pill-header--budget {
+    color: #ffd93d;
+    border-color: #fff9db;
+}
+.compare-criteria-pill-header--lang {
+    color: #4d96ff;
+    border-color: #e6f0ff;
+}
+.compare-criteria-pill-header--acad {
+    color: #9b59b6;
+    border-color: #f3e8f7;
+}
 
 .compare-criteria-pill-list {
     display: flex;
     flex-direction: row; /* Retour à l'alignement horizontal */
-    flex-wrap: wrap;    /* Permet de passer à la ligne si trop de critères */
+    flex-wrap: wrap; /* Permet de passer à la ligne si trop de critères */
     gap: 0.6rem;
 }
 
@@ -183,7 +204,7 @@
     color: white;
     border-color: var(--green-dark);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* --- BLOC SCORE (Barres Rainbow Wave) --- */
@@ -231,15 +252,22 @@
 
 /* L'effet de vagues blanches par-dessus le rainbow */
 .compare-score-fill::after {
-    content: '';
+    content: "";
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
         linear-gradient(135deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%),
         linear-gradient(225deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%),
         linear-gradient(45deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%),
         linear-gradient(315deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%);
-    background-position: 8px 0, 8px 0, 0 0, 0 0;
+    background-position:
+        8px 0,
+        8px 0,
+        0 0,
+        0 0;
     background-size: 16px 16px;
     opacity: 0.8;
 }
@@ -269,7 +297,9 @@
     margin-bottom: 1rem;
 }
 
-.verdict-icon { font-size: 1.4rem; }
+.verdict-icon {
+    font-size: 1.4rem;
+}
 
 .compare-verdict-title {
     font-weight: var(--font-weight-black);
@@ -280,7 +310,7 @@
 }
 
 .compare-verdict-body {
-    font-size: var(--font-size-lg); 
+    font-size: var(--font-size-lg);
     line-height: 1.8;
     color: var(--green-dark);
 }
@@ -322,9 +352,18 @@
     text-transform: uppercase;
 }
 
-.compare-cell-yes { border-left: 4px solid #22c55e; background: #f0fdf4; }
-.compare-cell-medium { border-left: 4px solid #f59e0b; background: #fffbeb; }
-.compare-cell-no { border-left: 4px solid #ef4444; background: #fef2f2; }
+.compare-cell-yes {
+    border-left: 4px solid #22c55e;
+    background: #f0fdf4;
+}
+.compare-cell-medium {
+    border-left: 4px solid #f59e0b;
+    background: #fffbeb;
+}
+.compare-cell-no {
+    border-left: 4px solid #ef4444;
+    background: #fef2f2;
+}
 
 /* --- CHATS & FOLLOWUP --- */
 .compare-chat-box {
@@ -337,8 +376,15 @@
     overflow-y: auto;
 }
 
-.compare-chat-message-user { text-align: right; margin-bottom: 1rem; }
-.compare-chat-message-assistant { text-align: left; margin-bottom: 1rem; color: #cbd5e1; }
+.compare-chat-message-user {
+    text-align: right;
+    margin-bottom: 1rem;
+}
+.compare-chat-message-assistant {
+    text-align: left;
+    margin-bottom: 1rem;
+    color: #cbd5e1;
+}
 
 .compare-chat-role {
     font-size: 0.6rem;
@@ -417,7 +463,9 @@
     border: 1px solid var(--border);
     background: var(--surface);
     box-shadow: var(--shadow-sm);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
 .compare-rank-card:hover {

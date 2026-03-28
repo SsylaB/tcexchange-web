@@ -79,7 +79,12 @@
     color: var(--green-dark);
 }
 .nav-link--quiz.nav-link--active {
-    background: linear-gradient(135deg, var(--yellow), #d6d172, var(--green-light));
+    background: linear-gradient(
+        135deg,
+        var(--yellow),
+        #d6d172,
+        var(--green-light)
+    );
 }
 
 .nav-link--compare:hover {
@@ -145,5 +150,5 @@
     border-radius: 6px;
     padding: 6px 12px;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }

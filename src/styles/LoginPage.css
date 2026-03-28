@@ -16,14 +16,14 @@
 /* Header */
 .login-header {
     margin-bottom: 2rem;
-    display: flex; 
+    display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;     
+    width: 100%;
 }
 
 .login-header p {
-    font-size: var(--font-size-xl); 
+    font-size: var(--font-size-xl);
     color: var(--text-soft);
     margin: 1.5rem 0;
     text-align: center;

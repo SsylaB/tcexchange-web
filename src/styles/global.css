@@ -33,12 +33,12 @@
 
     /* Rainbow gradient */
     --rainbow-gradient: linear-gradient(
-            90deg,
-            var(--red) 0%,
-            var(--orange) 25%,
-            var(--yellow) 50%,
-            var(--green-light) 75%,
-            var(--blue-light) 100%
+        90deg,
+        var(--red) 0%,
+        var(--orange) 25%,
+        var(--yellow) 50%,
+        var(--green-light) 75%,
+        var(--blue-light) 100%
     );
 
     /* Badge color system */
@@ -99,7 +99,6 @@ img {
     max-width: 100%;
 }
 
-
 /* ============================================
    Page Title System
    ============================================ */
@@ -140,7 +139,9 @@ img {
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .card-base--rainbow::before {

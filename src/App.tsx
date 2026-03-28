@@ -17,7 +17,10 @@ function App() {
                 <Route element={user ? <Layout /> : <Navigate to="/login" />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/catalog" element={<CatalogPage />} />
-                    <Route path="/destination/:id" element={<DestinationPage />} />
+                    <Route
+                        path="/destination/:id"
+                        element={<DestinationPage />}
+                    />
                     <Route path="/quiz" element={<QuizPage />} />
                     <Route path="/compare" element={<ComparePage />} />
                     <Route path="/map" element={<MapPage />} />

@@ -16,7 +16,7 @@
     font-size: clamp(2rem, 3.5vw, 3rem);
     color: var(--green-dark);
     line-height: 1.1;
-    text-align:center;
+    text-align: center;
 }
 
 /* Container du quiz – carte indépendante et centrée */
@@ -33,7 +33,9 @@
     flex-direction: column;
     gap: 1.2rem;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .quiz-container::before {
@@ -128,8 +130,12 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .ai-result {
@@ -145,8 +151,14 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Bouton refaire quiz */

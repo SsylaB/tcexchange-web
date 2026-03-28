@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/LoginPage.css"; 
+import "../styles/LoginPage.css";
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
@@ -25,22 +25,21 @@ export default function LoginPage() {
     return (
         <div className="login-container">
             <div className="login-card">
-                
                 <div className="login-header">
                     <div className="login-site-logo-wrapper">
-                        <img 
-                            src="/logo_full.png" 
-                            alt="TC Exchange Logo" 
-                            className="login-logo-img-tc" 
+                        <img
+                            src="/logo_full.png"
+                            alt="TC Exchange Logo"
+                            className="login-logo-img-tc"
                         />
 
-                        <img 
-                            src="/logo-insa-rouge.png" 
-                            alt="Logo INSA Lyon" 
-                            className="login-logo-img-insa" 
+                        <img
+                            src="/logo-insa-rouge.png"
+                            alt="Logo INSA Lyon"
+                            className="login-logo-img-insa"
                         />
                     </div>
-                    
+
                     <p>Connecte-toi avec ton identifiant INSA</p>
                 </div>
 
@@ -51,7 +50,7 @@ export default function LoginPage() {
                             id="username"
                             type="text"
                             value={username}
-                            onChange={e => setUsername(e.target.value)}
+                            onChange={(e) => setUsername(e.target.value)}
                             placeholder="ex: jdupont"
                             required
                         />
@@ -59,7 +58,11 @@ export default function LoginPage() {
 
                     {error && <p className="login-error">{error}</p>}
 
-                    <button type="submit" className="login-btn" disabled={isLoading}>
+                    <button
+                        type="submit"
+                        className="login-btn"
+                        disabled={isLoading}
+                    >
                         {isLoading ? "Connexion..." : "Se connecter"}
                     </button>
                 </form>

@@ -11,7 +11,7 @@
 table.compare-table {
     width: 100% !important;
     border-collapse: collapse !important;
-    table-layout: fixed !important; 
+    table-layout: fixed !important;
 }
 
 /* --- HEADERS --- */
@@ -72,26 +72,54 @@ table.compare-table {
 }
 
 /* --- COULEURS PAR GROUPE (TEXTE + BARRE) --- */
-.compare-table-cell-label--type .criterion-text { color: #7c5cbf; }
-.compare-table-cell-label--type .criterion-indicator { background: #7c5cbf; }
+.compare-table-cell-label--type .criterion-text {
+    color: #7c5cbf;
+}
+.compare-table-cell-label--type .criterion-indicator {
+    background: #7c5cbf;
+}
 
-.compare-table-cell-label--budget .criterion-text { color: #c07a00; }
-.compare-table-cell-label--budget .criterion-indicator { background: #c07a00; }
+.compare-table-cell-label--budget .criterion-text {
+    color: #c07a00;
+}
+.compare-table-cell-label--budget .criterion-indicator {
+    background: #c07a00;
+}
 
-.compare-table-cell-label--lang .criterion-text { color: var(--blue-dark); }
-.compare-table-cell-label--lang .criterion-indicator { background: var(--blue-dark); }
+.compare-table-cell-label--lang .criterion-text {
+    color: var(--blue-dark);
+}
+.compare-table-cell-label--lang .criterion-indicator {
+    background: var(--blue-dark);
+}
 
-.compare-table-cell-label--acad .criterion-text { color: #2266b2; }
-.compare-table-cell-label--acad .criterion-indicator { background: #2266b2; }
+.compare-table-cell-label--acad .criterion-text {
+    color: #2266b2;
+}
+.compare-table-cell-label--acad .criterion-indicator {
+    background: #2266b2;
+}
 
-.compare-table-cell-label--geo .criterion-text { color: #1a8c6e; }
-.compare-table-cell-label--geo .criterion-indicator { background: #1a8c6e; }
+.compare-table-cell-label--geo .criterion-text {
+    color: #1a8c6e;
+}
+.compare-table-cell-label--geo .criterion-indicator {
+    background: #1a8c6e;
+}
 
-.compare-table-cell-label--cadre .criterion-text { color: #3a8a3a; }
-.compare-table-cell-label--cadre .criterion-indicator { background: #3a8a3a; }
+.compare-table-cell-label--cadre .criterion-text {
+    color: #3a8a3a;
+}
+.compare-table-cell-label--cadre .criterion-indicator {
+    background: #3a8a3a;
+}
 
-.compare-table-cell-label--exp .criterion-text { color: var(--red); }
-.compare-table-cell-label--exp .criterion-indicator { background: var(--red); }
+.compare-table-cell-label--exp .criterion-text {
+    color: var(--red);
+}
+.compare-table-cell-label--exp .criterion-indicator {
+    background: var(--red);
+}
 
 /* --- CONTENU --- */
 .cell-badge-title {
@@ -105,9 +133,18 @@ table.compare-table {
 }
 
 /* Tes badges de couleur */
-.compare-cell-yes .cell-badge-title { background: var(--badge-country-bg); color: var(--badge-country-text); }
-.compare-cell-medium .cell-badge-title { background: var(--badge-bilateral-bg); color: var(--badge-bilateral-text); }
-.compare-cell-no .cell-badge-title { background: var(--badge-lang-bg); color: var(--badge-lang-text); }
+.compare-cell-yes .cell-badge-title {
+    background: var(--badge-country-bg);
+    color: var(--badge-country-text);
+}
+.compare-cell-medium .cell-badge-title {
+    background: var(--badge-bilateral-bg);
+    color: var(--badge-bilateral-text);
+}
+.compare-cell-no .cell-badge-title {
+    background: var(--badge-lang-bg);
+    color: var(--badge-lang-text);
+}
 
 .cell-explanation {
     font-size: 0.85rem;

@@ -5,12 +5,12 @@
     border-radius: 14px;
     padding: 1.25rem; /* On augmente le padding pour plus de confort */
     font-family: inherit;
-    
+
     /* AUGMENTATION POLICE */
     font-size: 1.1rem; /* Environ 18px pour que ce soit bien lisible */
     font-weight: 500;
     color: var(--green-dark);
-    
+
     background: white;
     resize: none;
     outline: none;
@@ -30,14 +30,14 @@
 }
 
 /* --- MESSAGES DU CHAT --- */
-.compare-chat-message-user, 
+.compare-chat-message-user,
 .compare-chat-message-assistant {
     padding: 1rem 1.25rem;
     border-radius: 18px;
     max-width: 85%;
-    
+
     /* AUGMENTATION POLICE DES RÉPONSES */
-    font-size: 1.05rem; 
+    font-size: 1.05rem;
     line-height: 1.5;
 }
 
