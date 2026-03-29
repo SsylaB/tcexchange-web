@@ -60,19 +60,17 @@ export default function Quiz() {
       }
 
       const data = await response.json();
-
-      // data is { recommendations: Recommendation[] }
-      if (!data || !Array.isArray(data.recommendations)) {
-        console.error("Réponse quiz invalide:", data);
-        setErrorMsg("Réponse inattendue du serveur.");
-        return;
+      
+      if (data.recommendations) {
+        setRecommendations(data.recommendations);
+      } else {
+        console.error("Format inattendu :", data);
+        setErrorMsg("Le serveur a renvoyé un format de données inconnu.");
       }
-
-      setRecommendations(data.recommendations);
       
     } catch (error) {
       console.error("Erreur backend:", error);
-      setErrorMsg("Impossible de joindre le serveur. Vérifie ton terminal Rust !");
+      setErrorMsg("Impossible de joindre le serveur.");
     } finally {
       setIsLoading(false);
     }
